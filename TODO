@@ -1,0 +1,4 @@
+*Add a merge function to allow playing multiple scenarios at once
+*With ajax requests we can have better scenario editor
+*Blackout should be done on every universe
+*Declare all variables to allow register_globals = Off

@@ -1,0 +1,55 @@
+/**
+ * ------------------------------------------------------------------------
+ *  Made by Jacques Bodin-Hullin
+ *     Jardin <jacques@bodin-hullin.net>
+ *
+ *   <http://www.bodin-hullin.net/?file=script#overscript>
+ *
+ *  Started on August 31, 2007
+ *  Last update September 12, 2007
+ *
+ * ------------------------------------------------------------------------
+ *
+ *  Copyright (C) 2007  Jacques 'Jardin' Bodin-Hullin
+ *
+ *  This file is part of Overscript.
+ *
+ *   Overscript is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *   Overscript is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *  along with Overscript.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * ------------------------------------------------------------------------
+ *
+ *  Add this line :
+ *    <div id="bubble"></div>
+ *  into the body of HTML.
+ */
+
+body div#bubble {
+   /*
+    * Change this code to adapt
+    * it with your website.
+    */
+   border: 1px solid black;
+   /*border-left-width: 3px;*/
+   background: white;
+   position: absolute;
+   z-index: 100;
+   padding: 2px 5px 2px 5px;
+   font-size: 11px;
+   color: black;
+   height: auto;
+   width: auto;
+
+
+   visibility: hidden; /* don't remove this line */
+}

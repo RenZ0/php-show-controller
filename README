@@ -1,0 +1,157 @@
+PSC - Php-Show-Controller
+-------------------------
+
+PSC provides an interface to create DMX shows, and play those thanks to OLA.
+
+Project Page: http://imaginux.com/lighting
+Licence: GNU General Public Licence 2 (See LICENCE)
+
+
+Requirements
+------------
+
+This software requires:
+
+   - webserver like apache with php/mysql support
+   - python 2.7 (earlier versions may also work)
+   - ola >= 0.8.14 (must be built with --enable-python-libs)
+
+
+Installation
+------------
+
+First, you need to set up your webserver, for example on debian/ubuntu :
+sudo apt-get install apache2 mysql-server php5-mysql phpmyadmin
+
+Configure php with register_globals = On :
+sudo gedit /etc/php5/apache2/php.ini
+sudo /etc/init.d/apache2 restart
+
+Create a new database, for example : psc
+(you can use phpmyadmin to do this).
+Import the sql file psc_base.sql.gz into the new database.
+
+According to your webserver access, fill these files :
+engine/config.py
+psc/config.php
+
+Move the psc folder into the webserver root :
+sudo cp -r psc/ /var/www/
+
+PSC is ready !
+
+
+Getting Started
+---------------
+
+You need to have OLA working :
+http://www.opendmx.net/index.php/OLA
+
+You can get deb packages on my website :
+http://imaginux.com/lighting/
+
+Start OLA, for example :
+olad -f (background)
+or
+olad -l3 (with log)
+
+Configure OLA universes from :
+http://127.0.0.1:9090
+
+From the engine folder, simply run 'python server.py'.
+Python will tell you if modules missing, like python-mysqldb.
+
+Go to your webserver url (with your web browser), for example :
+http://127.0.0.1/psc
+
+
+How to use PSC ?
+----------------
+
+0) Set language in Preferences : en = english, fr = french.
+RGB and CMY checkboxes are for display in scenario creation.
+Engine Rate is set into database.
+
+1) Add your fixtures infos in Profiles page :
+Add each channel, default value and describe its function.
+You can group some channels if you want, adding a dot between values.
+
+RGB and CMY are special and names need to start with 'rgb' and 'cmy'.
+You can make virtual fixtures using the 'Multi' feature.
+Take care to not modify your profiles after scenario creation.
+
+2) Set universes and addresses in Fixtures page.
+
+3) Scenarios : add one and click on its name :
+You will be able to define each step.
+
+On the right of channel name, the o letter will display dmx info
+(defined in your profile).
+
+Color changes, included random and gradient are made on 'rgb'
+channels by default.
+Save the colors or values you want into the bank (Colors page).
+
+Use the checkboxes to make partial changes.
+Try the filter to show channels you want, and make fast changes
+(with filter, 'ALL' button applies value on every channel seen).
+
+You can disable, duplicate a step with X or # symbol.
+
+D,w and R,w letters are used to generate many steps from original step :
+D : first rgb color moves over rgb channels, going to last one.
+R : first rgb color recover rgb channels, until all changed.
+w is the same but rewind, it uses the last color instead of first one.
+(these features only work with channels named like rgb1 to rgbX)
+
+Use buttons (list, start...) to play the scenario
+and see the result while you create.
+Go to Steps page to change hold and fade times.
+
+4) Play the scenarios you've created from Control page.
+Control can be done with python too :
+
+python test.py start.1 (where 1 is scenario's id)
+python test.py stop.1
+python test.py status.1
+python test.py list
+python test.py stopall
+python test.py bo
+
+
+Troubleshooting
+---------------
+
+Sometimes things don't always work as expected.
+Often it's just a setting, please double check everything.
+
+Keep in mind :
+With php interface you change sql data.
+Python engine reads sql data, and send it to OLA.
+OLA use your hardware to send DMX signal.
+
+
+Known Issues
+------------
+
+Currently it's better to play only one scenario at once.
+One scenario can control more than one fixture (creating Multi),
+but it's limited because of synchronization.
+If you want to play many scenarios, you could set universe in HTP merge mode,
+and it could work but there will be too much frames.
+OLA port limiter will do its job according to your device and your settings.
+
+It could be good to have a merge function, it's in todo list :)
+
+
+Bugs
+----
+
+If you find a bug or want to submit new ideas, please send me an email :
+renzo@imaginux.com
+
+
+Copyright
+---------
+
+PSC is Copyright 2011 by Laurent Pierru <renzo@imaginux.com>

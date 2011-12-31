@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/lxmath.css"/> 
+		<title id="title">LxMath</title>
+	</head>
+
+	<body>
+
+		<h1>LxMath</h1>
+
+    <p>
+    Created by: <a href="mailto:nick.niemeir@gmail.com">nick.niemeir@gmail.com</a>
+    </p>
+
+    <p>Input comma seperated numbers, and/or dash seperated ranges of numbers.<br>
+        address1,address2... ; from_address-to_address ; universe/address
+    </p>
+
+    <form name="formin">
+      <input type="text" name="dmxvalues"><br>
+      <select name="numbertype">
+        <option>dmx-address</option>
+        <option>dmx-value</option>
+      </select>
+      <br>
+      <input type="checkbox" name="dipswitch" value="show-switch" checked>Show Switches
+    </form>
+
+    <p>Note: Universes are numbered from 1</p>
+
+    <div id="maths">
+    </div>
+
+    <script src="js/lxmath.js"></script>
+
+	</body>
+</html>
+

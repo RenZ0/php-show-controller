@@ -1,0 +1,169 @@
+/*
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ * style.css
+ * 
+ * Copyright (C) 2011 Laurent Pierru <renzo@imaginux.com>
+ */
+
+body {
+/*background: url( "darkup.jpg" );*/
+background-color:white;
+margin:0px 0px 0px 5px;
+font-size:100%;
+font-family:verdana, sans-serif;
+}
+h3 {
+font-family:verdana, sans-serif;
+font-size:100%;
+color:blue;
+background-color:transparent;
+text-align:left;
+margin-left:30px;
+margin-top:30px;
+}
+h2 {
+font-family:verdana, sans-serif;
+font-size:110%;
+color:black;
+background-color:transparent;
+text-align:left;
+margin-left:12px;
+margin-top:25px;
+margin-bottom:20px;
+text-decoration:underline;
+}
+h1 {
+font-family:verdana, sans-serif;
+font-size:130%;
+color:black;
+background-color:transparent;
+text-align:left;
+margin-left:10px;
+margin-top:30px;
+}
+p {
+font-family:verdana, sans-serif;
+font-size:80%;
+color:black;
+background-color:transparent;
+text-align:justify;
+margin:10px;
+width:800px;
+}
+
+a:link {
+font-family:verdana, sans-serif;
+font-size:100%;
+color:#344a8a;
+background-color:transparent;
+text-decoration:none;
+}
+a:visited {
+font-family:verdana, sans-serif;
+font-size:100%;
+color:#344a8a;
+background-color:transparent;
+text-decoration:none;
+}
+a:hover {
+font-family:verdana, sans-serif;
+font-size:100%;
+color:red;
+background-color:transparent;
+text-decoration:none;
+}
+
+td {
+font-family:verdana, sans-serif;
+font-size:80%;
+color:black;
+text-align:left;
+background-color:transparent;
+border-color:grey;
+border-style:solid;
+border-width:1px;
+}
+
+#sequence td {
+font-family:verdana, sans-serif;
+font-size:80%;
+color:black;
+text-align:left;
+background-color:transparent;
+border-color:white;
+border-style:solid;
+border-width:1px;
+}
+
+ul,li {
+font-family:verdana, sans-serif;
+font-size:100%;
+text-align:left;
+margin-left:22px;
+margin-top:5px;
+}
+
+textarea {
+width:650px;
+height:90px;
+}
+
+table {
+margin-bottom:20px;
+}
+
+.carre {
+width:20px;
+height:20px;
+}
+
+.colorview td {
+font-family:verdana, sans-serif;
+color:black;
+background-color:transparent;
+border-color:white;
+border-style:solid;
+border-width:0px;
+}
+
+.sideborder table {
+margin-bottom:20px;
+}
+
+.sideborder td {
+border-width:0px 3px 0px 3px;
+padding:0px 4px 0px 4px;
+background-color:#CCCCCC;
+}
+
+.sideborder form {
+margin:3px;
+}
+
+.sideborder a {
+font-size:125%;
+}
+
+.insideborder table {
+margin-bottom:0px;
+}
+
+.insideborder td {
+border-width:0px 0px 0px 0px;
+padding:0px 4px 0px 4px;
+background-color:#CCCCCC;
+}
+
