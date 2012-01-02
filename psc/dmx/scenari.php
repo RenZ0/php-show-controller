@@ -489,7 +489,9 @@ echo'<table><tr>';
 	//colonne du tableau global
 	echo'<td>';
 
-	echo'<b>'.TXT_CHANNELS.'</b><br><br>';
+	echo'<b>'.TXT_CHANNELS.'</b><br>';
+
+	echo'<font color="#808080">DMX<div style="float:right;">Info</div></font>';
 
 	if ( !isset($_SESSION['light']) ){
 
@@ -859,7 +861,7 @@ echo'<table><tr>';
 
 						//echo'<br><br><input name="ch_value_src" value="" size="8">src';
 						echo'<br><br><select name="ch_value_src">';
-							$sqlh="SELECT * FROM dmx_colors WHERE disabled!=1 ORDER BY position,id ASC";
+							$sqlh="SELECT * FROM dmx_colors WHERE disabled!=1 ORDER BY position ASC, id ASC";
 							$sqlh=mysql_query($sqlh);
 							while ($datah=mysql_fetch_array($sqlh)){
 								echo"<option value=\"$datah[ch_value]\">$datah[colorname]";
@@ -868,7 +870,7 @@ echo'<table><tr>';
 
 						//echo'<br><input name="ch_value_dst" value="" size="8">dst';
 						echo'<br><select name="ch_value_dst">';
-							$sqlh="SELECT * FROM dmx_colors WHERE disabled!=1 ORDER BY position,id DESC";
+							$sqlh="SELECT * FROM dmx_colors WHERE disabled!=1 ORDER BY position DESC, id DESC";
 							$sqlh=mysql_query($sqlh);
 							while ($datah=mysql_fetch_array($sqlh)){
 								echo"<option value=\"$datah[ch_value]\">$datah[colorname]";
