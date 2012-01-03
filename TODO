@@ -1,6 +1,15 @@
+Engine
 *Add a merge function to allow playing multiple scenarios at once
-*With ajax requests we can have better scenario editor
+*Blackout should be done on every universe
+
+Interface
+*Enhance the scenario editor with ajax requests
 *Add a function to ajust a color already assigned
 *Modify jscolor to display color when typing values
-*Blackout should be done on every universe
+*Add a visual patcher for fixtures (like the one for ola rdm)
+
+Base
+*Make an index page to share fixture profiles
+
+Code
 *Declare all variables to allow register_globals = Off
