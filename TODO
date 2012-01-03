@@ -1,4 +1,6 @@
 *Add a merge function to allow playing multiple scenarios at once
 *With ajax requests we can have better scenario editor
+*Add a function to ajust a color already assigned
+*Modify jscolor to display color when typing values
 *Blackout should be done on every universe
 *Declare all variables to allow register_globals = Off
