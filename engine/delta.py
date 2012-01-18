@@ -31,10 +31,74 @@ from ola.ClientWrapper import ClientWrapper
 ###
 
 class DmxSender:
-    def __init__(self, wrapper, universe):
+    def __init__(self, wrapper, universe, tick_interval):
         self._wrapper = wrapper
         self._universe = universe
+        self._tick_interval = tick_interval
+
+        # send the first one
+        self.SendDmx()
+        self._wrapper.Run()
+
+    def SendDmx(self):
+        if self._counter != self._ticks:
+            self._wrapper.AddEvent(self._tick_interval, self.SendDmx)
+
+        #for each scenari in DICT
+        PlayScenari(id_scenari).Run
+
+        data = array.array('B', new_frame)
+        self._wrapper.Client().SendDmx(self._universe, data, self.DmxComplete)
+
+        if self._activesender:
+            # continue
+            #for each scenari in DICT
+            PlayScenari(id_scenari).ComputeNextFrame
+
+        else:
+            self._wrapper.Stop()
+
+###
+
+class PlayScenari:
+    def __init__(self, scenari):
+        self._scenari = scenari
         self._activesender = True
+        self.getfixturedetails
+
+    def getfixturedetails(self):
+        scendet = self.base.requete_sql("SELECT * FROM dmx_scensum WHERE id=%s", str(self.scenari)) #scen
+        for i in range(len(scendet)):
+            reverse = scendet[i]['reverse']
+            fixtdet = self.base.requete_sql("SELECT * FROM dmx_fixture WHERE id=%s", str(scendet[i]['id_fixture'])) #fixt
+            for j in range(len(fixtdet)):
+                patch = fixtdet[j]['patch']
+                patch_after = fixtdet[j]['patch_after']
+                universe = fixtdet[j]['univ']
+        print "patch, patch_after, univ"
+        print patch, patch_after, universe
+
+        poffset=""
+        for i in range(patch):
+            poffset+="0."
+        #print poffset
+
+        pafter=""
+        for i in range(patch_after):
+            pafter+="0."
+        #print pafter
+
+    def getdmxtrame(self, poffset, pafter, step_id):
+        alldmx=poffset
+        tramedmx = self.base.requete_sql("SELECT * FROM dmx_scenari WHERE id_scenari=%s AND step=%s ORDER BY id", str(self.scenari), str(step_id)) #step2
+        for k in range(len(tramedmx)):
+            #print(tramedmx[k]['ch_value'])
+            alldmx+=tramedmx[k]['ch_value']
+            alldmx+="."
+        alldmx+=pafter
+        alldmx=alldmx[:-1]
+        print alldmx
+        return [int(k) for k in alldmx.split(".")]
 
     def Run(self, start, end, tick_interval, fade_interval):
         self._counter = 0
@@ -44,28 +108,11 @@ class DmxSender:
         #print self._ticks
         self._delta = [float(b - a) / self._ticks for a, b in zip(start, end)]
 
-        # send the first one
-        self.SendDmx()
-        self._wrapper.Run()
-
     def ComputeNextFrame(self):
         self._counter += 1
         self._frame = map(sum, zip(self._frame, self._delta))
-
-    def SendDmx(self):
-        if self._counter != self._ticks:
-            self._wrapper.AddEvent(self._tick_interval, self.SendDmx)
-
         new_frame = [int(round(x)) for x in self._frame]
         #print "sending %s" % new_frame
-        data = array.array('B', new_frame)
-        self._wrapper.Client().SendDmx(self._universe, data, self.DmxComplete)
-
-        if self._activesender:
-            # continue
-            self.ComputeNextFrame()
-        else:
-            self._wrapper.Stop()
 
     def DmxComplete(self, state):
         if not state.Succeeded() or self._counter > self._ticks:
@@ -79,6 +126,10 @@ class DmxSender:
 
     def StopDmxSender(self):
         self._activesender = False
+
+###
+
+
 
 ###
 
@@ -140,17 +191,7 @@ class DeltaDmx(ThreadDmx):
             #print "sender will stop now"
             self.sender.StopDmxSender()
 
-    def getdmxtrame(self, poffset, pafter, step_id):
-        alldmx=poffset
-        tramedmx = self.base.requete_sql("SELECT * FROM dmx_scenari WHERE id_scenari=%s AND step=%s ORDER BY id", str(self.scenari), str(step_id)) #step2
-        for k in range(len(tramedmx)):
-            #print(tramedmx[k]['ch_value'])
-            alldmx+=tramedmx[k]['ch_value']
-            alldmx+="."
-        alldmx+=pafter
-        alldmx=alldmx[:-1]
-        print alldmx
-        return [int(k) for k in alldmx.split(".")]
+
 
     def blackout(self):
         print "blackout"
@@ -178,27 +219,6 @@ class DeltaDmx(ThreadDmx):
     def gen_dmx(self):
 
         ##################
-
-        scendet = self.base.requete_sql("SELECT * FROM dmx_scensum WHERE id=%s", str(self.scenari)) #scen
-        for i in range(len(scendet)):
-            reverse = scendet[i]['reverse']
-            fixtdet = self.base.requete_sql("SELECT * FROM dmx_fixture WHERE id=%s", str(scendet[i]['id_fixture'])) #fixt
-            for j in range(len(fixtdet)):
-                patch = fixtdet[j]['patch']
-                patch_after = fixtdet[j]['patch_after']
-                universe = fixtdet[j]['univ']
-        print "patch, patch_after, univ"
-        print patch, patch_after, universe
-
-        poffset=""
-        for i in range(patch):
-            poffset+="0."
-        #print poffset
-
-        pafter=""
-        for i in range(patch_after):
-            pafter+="0."
-        #print pafter
 
         ##################
 
