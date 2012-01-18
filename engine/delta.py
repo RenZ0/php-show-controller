@@ -54,7 +54,10 @@ class DmxSender:
         self._wrapper.AddEvent(self._tick_interval, self.SendDmx)
 
         #for each scenari in DICT
-        PlayScenari(id_scenari).Run
+            PlayScenari(id_scenari).Run
+            PlayScenari(id_scenari).ComputeNextFrame
+
+        MakeTheWholeFrame = map(add_each_frame) # TO DO
 
         data = array.array('B', new_frame)
         self._wrapper.Client().SendDmx(self._universe, data, self.DmxComplete)
@@ -119,7 +122,7 @@ class PlayScenari:
         self._delta = [float(b - a) / self._ticks for a, b in zip(start, end)]
 
         if self._counter == self._ticks:
-            self.gen_dmx.next_step
+            self.gen_dmx.next_step # TO DO
 
     def ComputeNextFrame(self):
         self._counter += 1
