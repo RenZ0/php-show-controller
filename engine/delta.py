@@ -31,18 +31,27 @@ from ola.ClientWrapper import ClientWrapper
 ###
 
 class DmxSender:
-    def __init__(self, wrapper, universe, tick_interval):
+    def __init__(self, wrapper, universe):
         self._wrapper = wrapper
         self._universe = universe
-        self._tick_interval = tick_interval
+        self.base = com_sql.ComSql()
+
+        engine = self.base.requete_sql("SELECT * FROM dmx_engine WHERE id=1") #setting
+        for e in range(len(engine)):
+            freq_ms = engine[e]['freq_ms']
+
+        self._tick_interval = int(freq_ms)  # in milliseconds
+
+        print "freq_ms"
+        print self._tick_interval
 
         # send the first one
         self.SendDmx()
         self._wrapper.Run()
 
     def SendDmx(self):
-        if self._counter != self._ticks:
-            self._wrapper.AddEvent(self._tick_interval, self.SendDmx)
+
+        self._wrapper.AddEvent(self._tick_interval, self.SendDmx)
 
         #for each scenari in DICT
         PlayScenari(id_scenari).Run
@@ -64,7 +73,8 @@ class PlayScenari:
     def __init__(self, scenari):
         self._scenari = scenari
         self._activesender = True
-        self.getfixturedetails
+        self.base = com_sql.ComSql()
+        getfixturedetails()
 
     def getfixturedetails(self):
         scendet = self.base.requete_sql("SELECT * FROM dmx_scensum WHERE id=%s", str(self.scenari)) #scen
@@ -78,24 +88,24 @@ class PlayScenari:
         print "patch, patch_after, univ"
         print patch, patch_after, universe
 
-        poffset=""
+        self.poffset=""
         for i in range(patch):
-            poffset+="0."
+            self.poffset+="0."
         #print poffset
 
-        pafter=""
+        self.pafter=""
         for i in range(patch_after):
-            pafter+="0."
+            self.pafter+="0."
         #print pafter
 
     def getdmxtrame(self, poffset, pafter, step_id):
-        alldmx=poffset
+        alldmx=self.poffset
         tramedmx = self.base.requete_sql("SELECT * FROM dmx_scenari WHERE id_scenari=%s AND step=%s ORDER BY id", str(self.scenari), str(step_id)) #step2
         for k in range(len(tramedmx)):
             #print(tramedmx[k]['ch_value'])
             alldmx+=tramedmx[k]['ch_value']
             alldmx+="."
-        alldmx+=pafter
+        alldmx+=self.pafter
         alldmx=alldmx[:-1]
         print alldmx
         return [int(k) for k in alldmx.split(".")]
@@ -107,6 +117,9 @@ class PlayScenari:
         self._ticks = float(fade_interval) / tick_interval                                                                                      
         #print self._ticks
         self._delta = [float(b - a) / self._ticks for a, b in zip(start, end)]
+
+        if self._counter == self._ticks:
+            self.gen_dmx.next_step
 
     def ComputeNextFrame(self):
         self._counter += 1
@@ -158,15 +171,6 @@ class DeltaDmx(ThreadDmx):
     def __init__(self, scenari, term):
         self.scenari = scenari
         super(DeltaDmx,self).__init__(term)
-        self.base = com_sql.ComSql()
-
-        engine = self.base.requete_sql("SELECT * FROM dmx_engine WHERE id=1") #setting
-        for e in range(len(engine)):
-            freq_ms = engine[e]['freq_ms']
-
-        self.TICK_INTERVAL = int(freq_ms)  # in milliseconds
-        print "freq_ms"
-        print self.TICK_INTERVAL
 
     def run(self):
         print self.getName(),"Started"    
@@ -214,7 +218,7 @@ class DeltaDmx(ThreadDmx):
         h = 3
         h_ms = int(float(h)*1000)
         print h_ms
-        self.sender.Run(ei, ei, self.TICK_INTERVAL, h_ms)
+        self.sender.Run(ei, ei, self._tick_interval, h_ms)
 
     def gen_dmx(self):
 
@@ -285,7 +289,7 @@ class DeltaDmx(ThreadDmx):
                     #boucle fade
                     t_ms = int(float(t)*1000)
                     print t_ms
-                    self.sender.Run(si, ei, self.TICK_INTERVAL, t_ms)
+                    self.sender.Run(si, ei, self._tick_interval, t_ms)
                 else:
                     pass
 
@@ -304,7 +308,7 @@ class DeltaDmx(ThreadDmx):
                     #boucle hold
                     h_ms = int(float(h)*1000)
                     print h_ms
-                    self.sender.Run(ei, ei, self.TICK_INTERVAL, h_ms)
+                    self.sender.Run(ei, ei, self._tick_interval, h_ms)
                 else:
                     pass
 
