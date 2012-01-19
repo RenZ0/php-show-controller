@@ -51,6 +51,7 @@ class DmxSender:
 
     def SendDmx(self):
 
+        #Schedule an event to run in the future
         self._wrapper.AddEvent(self._tick_interval, self.SendDmx)
 
         #for each scenari in DICT
@@ -227,7 +228,7 @@ class PlayScenari:
     def ComputeNextFrame(self):
         self._counter += 1
         self._frame = map(sum, zip(self._frame, self._delta))
-        new_frame = [int(round(x)) for x in self._frame]
+        self.new_frame = [int(round(x)) for x in self._frame]
         #print "sending %s" % new_frame
 
     def DmxComplete(self, state):
