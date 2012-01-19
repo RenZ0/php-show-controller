@@ -46,13 +46,13 @@ class DmxSender:
         print self._tick_interval
 
         # send the first one
-        self.SendDmx()
+        self.SendDmxFrame()
         self._wrapper.Run()
 
-    def SendDmx(self):
+    def SendDmxFrame(self):
 
         #Schedule an event to run in the future
-        self._wrapper.AddEvent(self._tick_interval, self.SendDmx)
+        self._wrapper.AddEvent(self._tick_interval, self.SendDmxFrame)
 
         #for each scenari in DICT
             PlayScenari(id_scenari).Run
