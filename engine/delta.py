@@ -72,36 +72,136 @@ class DmxSender:
 
 ###
 
+class BlackOut:
+    def __init__(self):
+        print "blackout"
+
+        trame=""
+        for i in range(512):
+            trame+="0."
+        trame=trame[:-1]
+        print trame
+
+        ei=[int(k) for k in trame.split(".")]
+
+#        ### send dmx ###
+
+#        #boucle hold
+#        h = 3
+#        h_ms = int(float(h)*1000)
+#        print h_ms
+#        self.sender.Run(ei, ei, self._tick_interval, h_ms)
+
 class PlayScenari:
     def __init__(self, scenari):
         self._scenari = scenari
         self._activesender = True
         self.base = com_sql.ComSql()
-        getfixturedetails()
+        self.GetFixtureDetails
 
-    def getfixturedetails(self):
+    def GetFixtureDetails(self):
         scendet = self.base.requete_sql("SELECT * FROM dmx_scensum WHERE id=%s", str(self.scenari)) #scen
         for i in range(len(scendet)):
-            reverse = scendet[i]['reverse']
+            self.reverse = scendet[i]['reverse']
+
+            if self.reverse==0:
+                way="ASC"
+            else:
+                way="DESC"
+
+            print way
+
             fixtdet = self.base.requete_sql("SELECT * FROM dmx_fixture WHERE id=%s", str(scendet[i]['id_fixture'])) #fixt
             for j in range(len(fixtdet)):
-                patch = fixtdet[j]['patch']
-                patch_after = fixtdet[j]['patch_after']
-                universe = fixtdet[j]['univ']
+                self.patch = fixtdet[j]['patch']
+                self.patch_after = fixtdet[j]['patch_after']
+                self.universe = fixtdet[j]['univ']
         print "patch, patch_after, univ"
-        print patch, patch_after, universe
+        print self.patch, self.patch_after, self.universe
 
         self.poffset=""
         for i in range(patch):
             self.poffset+="0."
-        #print poffset
+        print self.poffset
 
         self.pafter=""
         for i in range(patch_after):
             self.pafter+="0."
-        #print pafter
+        print self.pafter
 
-    def getdmxtrame(self, poffset, pafter, step_id):
+    def GetScenariSeq(self):
+        #sequence
+        if reverse==0:
+            sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position ASC,id ASC", str(self.scenari)) #seq
+        else:
+            sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position DESC,id DESC", str(self.scenari)) #seq
+
+        #t = sequence[0]['fade']
+        #h = sequence[0]['hold']
+
+        # define first step
+        si = ""
+
+        for i in range(len(sequence)):
+            #print (sequence[i]['step'])
+            #print "len"
+            #print (len(sequence))
+
+            print "start"
+            print i
+            # init
+            if si == "":
+                start_step = sequence[i]['id']
+                si = self.GetDmxTrame(start_step)
+
+            #print (len(sequence))
+            if (i+1)==(len(sequence)):
+                i=-1
+                print "reloop"
+
+            print "end"
+            print i+1
+            end_step = sequence[i+1]['id']
+            ei = self.GetDmxTrame(end_step)
+
+                ### FADE ###
+
+                t = sequence[i]['fade']
+                self._checkpoint()
+                print "fade"
+                print (t)
+
+                ### send dmx ###
+
+                if float(t) > 0:
+                    #boucle fade
+                    t_ms = int(float(t)*1000)
+                    print t_ms
+                    self.sender.Run(si, ei, self._tick_interval, t_ms)
+                else:
+                    pass
+
+                ### HOLD ###
+
+                h = sequence[i+1]['hold']
+                self._checkpoint()
+                print "hold"
+                print (h)
+
+                ### send dmx ###
+
+                if float(h) > 0:
+                    #boucle hold
+                    h_ms = int(float(h)*1000)
+                    print h_ms
+                    self.sender.Run(ei, ei, self._tick_interval, h_ms)
+                else:
+                    pass
+
+                # next step start from end
+                si = ei
+
+    def GetDmxTrame(self, step_id):
         alldmx=self.poffset
         tramedmx = self.base.requete_sql("SELECT * FROM dmx_scenari WHERE id_scenari=%s AND step=%s ORDER BY id", str(self.scenari), str(step_id)) #step2
         for k in range(len(tramedmx)):
@@ -200,28 +300,7 @@ class DeltaDmx(ThreadDmx):
 
 
 
-    def blackout(self):
-        print "blackout"
 
-        wrapper = ClientWrapper()
-        universe = 1
-        self.sender = DmxSender(wrapper, universe)
-
-        trame=""
-        for i in range(512):
-            trame+="0."
-        trame=trame[:-1]
-        print trame
-
-        ei=[int(k) for k in trame.split(".")]
-
-        ### send dmx ###
-
-        #boucle hold
-        h = 3
-        h_ms = int(float(h)*1000)
-        print h_ms
-        self.sender.Run(ei, ei, self._tick_interval, h_ms)
 
     def gen_dmx(self):
 
@@ -233,93 +312,6 @@ class DeltaDmx(ThreadDmx):
         self.sender = DmxSender(wrapper, universe)
 
         ##################
-
-        if reverse==0:
-            way="ASC"
-        else:
-            way="DESC"
-
-        print way
-
-        # define first step
-        si = ""
-
-        while True:
-
-            #sequence
-            if reverse==0:
-                sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position ASC,id ASC", str(self.scenari)) #seq
-            else:
-                sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position DESC,id DESC", str(self.scenari)) #seq
-
-        #    t = sequence[0]['fade']
-        #    h = sequence[0]['hold']
-
-            for i in range(len(sequence)):
-        #        print (sequence[i]['step'])
-        #        print "len"
-        #        print (len(sequence))
-
-                print "start"
-                print i
-                # init
-                if si == "":
-                    start_step = sequence[i]['id']
-                    si = self.getdmxtrame(poffset, pafter, start_step)
-
-        #        print (len(sequence))
-                if (i+1)==(len(sequence)):
-                    i=-1
-                    print "reloop"
-
-                print "end"
-                print i+1
-                end_step = sequence[i+1]['id']
-                ei = self.getdmxtrame(poffset, pafter, end_step)
-
-        ##################
-
-        ##################
-
-                t = sequence[i]['fade']
-                self._checkpoint()
-                print "fade"
-                print (t)
-
-                ### send dmx ###
-
-                if float(t) > 0:
-                    #boucle fade
-                    t_ms = int(float(t)*1000)
-                    print t_ms
-                    self.sender.Run(si, ei, self._tick_interval, t_ms)
-                else:
-                    pass
-
-                ### ###
-
-                ### ###
-
-                h = sequence[i+1]['hold']
-                self._checkpoint()
-                print "hold"
-                print (h)
-
-                ### send dmx ###
-
-                if float(h) > 0:
-                    #boucle hold
-                    h_ms = int(float(h)*1000)
-                    print h_ms
-                    self.sender.Run(ei, ei, self._tick_interval, h_ms)
-                else:
-                    pass
-
-                # next step start from end
-                si = ei
-
-        ###
-        #wrapper.Stop()
 
 
 
