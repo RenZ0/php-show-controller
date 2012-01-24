@@ -25,17 +25,19 @@ import sys
 import time
 import array
 import com_sql
-from threading import Thread
 from ola.ClientWrapper import ClientWrapper
 
 ###
 
 class DmxSender:
-    def __init__(self, wrapper, universe):
+    def __init__(self, wrapper):
+        '''Wrapper, Framerate'''
+
         self._wrapper = wrapper
-        self._universe = universe
+        self._activesender = True
         self.base = com_sql.ComSql()
 
+        # SQL Framerate
         engine = self.base.requete_sql("SELECT * FROM dmx_engine WHERE id=1") #setting
         for e in range(len(engine)):
             freq_ms = engine[e]['freq_ms']
@@ -45,62 +47,122 @@ class DmxSender:
         print "freq_ms"
         print self._tick_interval
 
+        # dict to store each scenari instance
+        self.my_scens={}
+
         # send the first one
         self.SendDmxFrame()
         self._wrapper.Run()
 
     def SendDmxFrame(self):
-
-        #Schedule an event to run in the future
-        self._wrapper.AddEvent(self._tick_interval, self.SendDmxFrame)
-
-        #for each scenari in DICT
-            PlayScenari(id_scenari).Run
-            PlayScenari(id_scenari).ComputeNextFrame
-
-        MakeTheWholeFrame = map(add_each_frame) # TO DO
-
-        data = array.array('B', new_frame)
-        self._wrapper.Client().SendDmx(self._universe, data, self.DmxComplete)
+        '''Ask frame for each scenari and make the whole frame, repeated every tick_interval'''
 
         if self._activesender:
-            # continue
-            #for each scenari in DICT
-            PlayScenari(id_scenari).ComputeNextFrame
+            # Schedule an event to run in the future
+            print "Schedule next"
+            self._wrapper.AddEvent(self._tick_interval, self.SendDmxFrame)
 
         else:
             self._wrapper.Stop()
 
+        #for each scenari in list
+        for scenarid in self.scen_list:
+
+            # create scenari instance if needed
+            if not self.my_scens.has_key(scenarid):
+                scen=PlayScenari(scenarid, self._tick_interval)
+
+                # store instance in dict, only once
+                self.my_scens[scenarid]=scen
+                print self.my_scens
+
+            # for each instance, compute frame
+            scen=self.my_scens[scenarid]
+            scen.ComputeNextFrame()
+            print "ComputeNextFrame"
+            print "sending %s" % scen.new_frame
+
+            # sum all frames to make the whole one
+            self.WholeFrame = sum(self.WholeFrame,scen.new_frame) # TO DO
+            print "FRAME"
+            print self.WholeFrame
+
+        # send whole frame
+#        data = array.array('B', WholeFrame)
+#        self._wrapper.Client().SendDmx(1, data)
+
+    def StopDmxSender(self):
+        self._activesender = False
+
 ###
 
-class BlackOut:
-    def __init__(self):
-        print "blackout"
+#class BlackOut:
+#    def __init__(self):
+#        '''Send zeros on all channels'''
 
-        trame=""
-        for i in range(512):
-            trame+="0."
-        trame=trame[:-1]
-        print trame
+#        trame=""
+#        for i in range(512):
+#            trame+="0."
+#        trame=trame[:-1]
+#        print trame
 
-        ei=[int(k) for k in trame.split(".")]
+#        ei=[int(k) for k in trame.split(".")]
 
-#        ### send dmx ###
-
-#        #boucle hold
-#        h = 3
-#        h_ms = int(float(h)*1000)
-#        print h_ms
-#        self.sender.Run(ei, ei, self._tick_interval, h_ms)
+###
 
 class PlayScenari:
-    def __init__(self, scenari):
+    def __init__(self, scenari, tickint):
+        '''Each instance if for only one scenari'''
+
         self._scenari = scenari
-        self._activesender = True
+        self.tick_interval = tickint
+        self._activescenari = True
         self.base = com_sql.ComSql()
         self.GetFixtureDetails
+        self.current_i = -1
+        self.GetNextStep
 
     def GetFixtureDetails(self):
+        '''Fixture patch (define address), universe'''
+
+        # SQL Scen infos
+        scendet = self.base.requete_sql("SELECT * FROM dmx_scensum WHERE id=%s", str(self.scenari)) #scen
+        for i in range(len(scendet)):
+
+            # SQL Fixture infos
+            fixtdet = self.base.requete_sql("SELECT * FROM dmx_fixture WHERE id=%s", str(scendet[i]['id_fixture'])) #fixt
+            for j in range(len(fixtdet)):
+                self.patch = fixtdet[j]['patch']
+                self.patch_after = fixtdet[j]['patch_after']
+                self.universe = fixtdet[j]['univ']
+        print "patch, patch_after, univ"
+        print self.patch, self.patch_after, self.universe
+
+        # init offset
+        self.poffset=""
+
+        # fill zeros to meet universe zone
+        if self.universe == 2:
+            for i in range(512):
+                self.poffset+="0."
+
+        # fill zeros to meet address
+        for i in range(self.patch):
+            self.poffset+="0."
+        print self.poffset
+
+        # fill zeros if splitted fixture
+        self.pafter=""
+        for i in range(self.patch_after):
+            self.pafter+="0."
+        print self.pafter
+
+    def GetNextStep(self):
+        '''Define the next step, fade/hold times, target values and delta'''
+
+        print "Define the next step %s" % self._scenari
+
+        # SQL Scen infos
         scendet = self.base.requete_sql("SELECT * FROM dmx_scensum WHERE id=%s", str(self.scenari)) #scen
         for i in range(len(scendet)):
             self.reverse = scendet[i]['reverse']
@@ -112,97 +174,56 @@ class PlayScenari:
 
             print way
 
-            fixtdet = self.base.requete_sql("SELECT * FROM dmx_fixture WHERE id=%s", str(scendet[i]['id_fixture'])) #fixt
-            for j in range(len(fixtdet)):
-                self.patch = fixtdet[j]['patch']
-                self.patch_after = fixtdet[j]['patch_after']
-                self.universe = fixtdet[j]['univ']
-        print "patch, patch_after, univ"
-        print self.patch, self.patch_after, self.universe
-
-        self.poffset=""
-        for i in range(patch):
-            self.poffset+="0."
-        print self.poffset
-
-        self.pafter=""
-        for i in range(patch_after):
-            self.pafter+="0."
-        print self.pafter
-
-    def GetScenariSeq(self):
-        #sequence
-        if reverse==0:
+        # SQL Sequence
+        if self.reverse==0:
             sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position ASC,id ASC", str(self.scenari)) #seq
         else:
             sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position DESC,id DESC", str(self.scenari)) #seq
 
-        #t = sequence[0]['fade']
-        #h = sequence[0]['hold']
+        # each time we call this function, increase i to get the next step of sequence
+        self.current_i = self.current_i +1
+        print "current i in seq"
+        print self.current_i
 
-        # define first step
-        si = ""
+        # milliseconds ?
+        self.fade_interval=int(float(sequence[self.current_i]['fade'])*1000)
+        self.hold_interval=int(float(sequence[self.current_i]['hold'])*1000)
 
-        for i in range(len(sequence)):
-            #print (sequence[i]['step'])
-            #print "len"
-            #print (len(sequence))
+        print "start"
+        if self.start_stepid == "":
+            self.start_stepid=sequence[self.current_i]['id']
+        print self.start_stepid
 
-            print "start"
-            print i
-            # init
-            if si == "":
-                start_step = sequence[i]['id']
-                si = self.GetDmxTrame(start_step)
+#        print "len seq"
+#        print (len(sequence))
 
-            #print (len(sequence))
-            if (i+1)==(len(sequence)):
-                i=-1
-                print "reloop"
+        if (self.current_i +1) == (len(sequence)):
+            self.current_i = -1
+            print "reloop"
 
-            print "end"
-            print i+1
-            end_step = sequence[i+1]['id']
-            ei = self.GetDmxTrame(end_step)
+        print "end"
+        self.end_stepid=sequence[self.current_i +1]['id']
+        print self.end_stepid
 
-                ### FADE ###
+        # next step start from end
+        self.start_stepid = self.end_stepid
 
-                t = sequence[i]['fade']
-                self._checkpoint()
-                print "fade"
-                print (t)
+        self._counter = 0
+        self._ticks = float(self.fade_interval) / self.tick_interval                                                                                      
 
-                ### send dmx ###
+        print "Iter"
+        print self._ticks
 
-                if float(t) > 0:
-                    #boucle fade
-                    t_ms = int(float(t)*1000)
-                    print t_ms
-                    self.sender.Run(si, ei, self._tick_interval, t_ms)
-                else:
-                    pass
-
-                ### HOLD ###
-
-                h = sequence[i+1]['hold']
-                self._checkpoint()
-                print "hold"
-                print (h)
-
-                ### send dmx ###
-
-                if float(h) > 0:
-                    #boucle hold
-                    h_ms = int(float(h)*1000)
-                    print h_ms
-                    self.sender.Run(ei, ei, self._tick_interval, h_ms)
-                else:
-                    pass
-
-                # next step start from end
-                si = ei
+        self.start=self.GetDmxTrame(self.start_stepid)
+        self.end=self.GetDmxTrame(self.end_stepid)
+        self._frame = self.start
+        self._delta = [float(b - a) / self._ticks for a, b in zip(self.start, self.end)]
+        print "delta"
+        print self._delta
 
     def GetDmxTrame(self, step_id):
+        '''Compose trame for one step'''
+
         alldmx=self.poffset
         tramedmx = self.base.requete_sql("SELECT * FROM dmx_scenari WHERE id_scenari=%s AND step=%s ORDER BY id", str(self.scenari), str(step_id)) #step2
         for k in range(len(tramedmx)):
@@ -214,105 +235,34 @@ class PlayScenari:
         print alldmx
         return [int(k) for k in alldmx.split(".")]
 
-    def Run(self, start, end, tick_interval, fade_interval):
-        self._counter = 0
-        self._tick_interval = tick_interval
-        self._frame = start
-        self._ticks = float(fade_interval) / tick_interval                                                                                      
-        #print self._ticks
-        self._delta = [float(b - a) / self._ticks for a, b in zip(start, end)]
-
-        if self._counter == self._ticks:
-            self.gen_dmx.next_step # TO DO
-
     def ComputeNextFrame(self):
-        self._counter += 1
-        self._frame = map(sum, zip(self._frame, self._delta))
-        self.new_frame = [int(round(x)) for x in self._frame]
-        #print "sending %s" % new_frame
+        '''Return trame + delta according to fade'''
 
-    def DmxComplete(self, state):
-        if not state.Succeeded() or self._counter > self._ticks:
-            #sleep 25ms to avoid rising between steps
-            norise = (float(self._tick_interval)/1000)
-            #print "sleep"
-            #print norise
-            time.sleep(norise)
-            self._wrapper.Stop()
-            #print "stop sender"
+        # if step completed, call the next one
+        if self._counter >= self._ticks:
+            print "NEXT STEP"
+            self.GetNextStep()
 
-    def StopDmxSender(self):
-        self._activesender = False
+        if self._activescenari:
+            self._counter += 1
+            print "it counter"
+            print self._counter
+    #        self._frame = self.start
+            self._frame = map(sum, zip(self._frame, self._delta))
+#            print self._frame
+            self.new_frame = [int(round(x)) for x in self._frame]
+            return self.new_frame
 
-###
+        else:
+            print "Stop"
 
-
-
-###
-
-class ExcStopDmx(Exception):
-    pass
-
-class ThreadDmx(Thread):
-    def __init__(self, term):
-        Thread.__init__(self)
-        self.Terminated = False
-        self.term=term
-
-    def run(self):
-        pass
-
-    ## Stop the thread if called
-    def stop(self):
-        self.Terminated = True
-
-    def _checkpoint(self):
-        if self.Terminated:
-            raise ExcStopDmx
-
-class DeltaDmx(ThreadDmx):
-
-    def __init__(self, scenari, term):
-        self.scenari = scenari
-        super(DeltaDmx,self).__init__(term)
-
-    def run(self):
-        print self.getName(),"Started"    
-        try:
-            if self.scenari != 0:
-                self.gen_dmx()
-            else:
-                self.blackout()
-        except ExcStopDmx:
-            print self.getName(),"Stopped"
-            return
-        finally:
-            self.term()
-        print self.getName(),"Finished"
-
-    def state(self):
-        return self.getName()+" running "
-
-    def stop(self):
-        super(DeltaDmx,self).stop()
-        if hasattr(self, 'sender') and self.sender:
-            #print "sender will stop now"
-            self.sender.StopDmxSender()
-
-
-
-
-
-    def gen_dmx(self):
+    def StopScenari(self):
+        self._activescenari = False
 
         ##################
 
-        ##################
-
-        wrapper = ClientWrapper()
-        self.sender = DmxSender(wrapper, universe)
+wrapper = ClientWrapper()
+sender = DmxSender(wrapper)
 
         ##################
-
-
 

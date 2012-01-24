@@ -21,9 +21,9 @@
 """Php-Show-Controller. TCP Server to control scenarios."""
 
 import SocketServer
-from delta import DeltaDmx
+from delta_testd import DmxSender
 from config import HOST, PORT
-from threading import Lock
+#from threading import Lock
 import time
 
 # tcp server commands :
@@ -44,8 +44,10 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
     override the handle() method to implement communication to the
     client.
     """
-    my_threads = {}
-    lock=Lock()
+
+#    global scen_dict
+#    scen_dict = {}
+#    lock=Lock()
 
     def handle(self):
         # self.request is the TCP socket connected to the client
@@ -58,16 +60,18 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         except:
             command=self.data
 
+        self.ZeDelta = DmxSender()
+
         if command=="start":
-            if not self.my_threads.has_key(scenarid):
-                t= DeltaDmx(scenarid, lambda:self.terminate(scenarid))
-                self.my_threads[scenarid]=t
-                t.start()
+            if not self.scen_dict.has_key(scenarid):
+#                t= DeltaDmx(scenarid, lambda:self.terminate(scenarid))
+                self.ZeDelta.scen_dict[scenarid]
+#                t.start()
                 status=1
         
         if command=="stop":
             try:
-                t=self.my_threads[scenarid]
+                t=self.scen_dict[scenarid]
                 t.stop()
                 t.join()
                 if not t.is_alive():
@@ -79,31 +83,31 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
             
         if command=="status":
             try:
-                data=self.my_threads[scenarid].state()
+                data=self.scen_dict[scenarid].state()
                 status=1
             except:
                 pass
 
         if command=="list":
             try:
-                print self.my_threads.keys()
-                data=reduce(lambda x,y : y+'.'+x, self.my_threads.keys())
+                print self.scen_dict.keys()
+                data=reduce(lambda x,y : y+'.'+x, self.scen_dict.keys())
             except:
                 pass
 
         if command=="stopall":
-            for t in self.my_threads.itervalues():
+            for t in self.scen_dict.itervalues():
                 t.stop()
                 status=1
 
         if command=="bo":
-            for t in self.my_threads.itervalues():
+            for t in self.scen_dict.itervalues():
                 t.stop()
                 #status=1
             time.sleep(0.25)
-            if not self.my_threads.has_key(0):
+            if not self.scen_dict.has_key(0):
                 t= DeltaDmx(0, lambda:self.terminate(0))
-                self.my_threads[0]=t
+                self.scen_dict[0]=t
                 t.start()
                 status=1
 
@@ -115,7 +119,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
     
     def terminate(self,scenarid):
         if self.lock.acquire():
-            self.my_threads.pop(scenarid)
+            self.scen_dict.pop(scenarid)
             self.lock.release()
 
 if __name__=="__main__":
