@@ -43,7 +43,7 @@ class DmxSender:
             freq_ms = engine[e]['freq_ms']
 
         # FOR TEST
-        freq_ms = 1000
+        freq_ms = 500
 
         self._tick_interval = int(freq_ms)  # in milliseconds
 
@@ -56,14 +56,18 @@ class DmxSender:
         # dict to store each scenari instance
         self.my_scens={}
 
+        # number of universes
+        self.univ_qty = 2
+
         # array to store full frame
-        self.WholeDmxFrame = [0] * 512
+        self.WholeDmxFrame = [0] * 512 * self.univ_qty
 
         # send the first one
         self.SendDmxFrame()
         self._wrapper.Run()
 
-    def Assign(self,offset,values):
+    def AssignChannels(self,offset,values):
+        '''Assign channels value according to address'''
         self.WholeDmxFrame[offset:offset+len(values)] = values
 
     def SendDmxFrame(self):
@@ -95,14 +99,18 @@ class DmxSender:
 #            print "sending %s" % scen.new_frame
 
             # add partial frame to full one
-            self.Assign(scen.patch, scen.new_frame)
+            self.AssignChannels(scen.patch, scen.new_frame)
 
             print "FRAME"
             print self.WholeDmxFrame
 
-        # send whole frame
-        data = array.array('B', self.WholeDmxFrame)
-        self._wrapper.Client().SendDmx(1, data)
+        # send data to universes
+        for u in range(self.univ_qty):
+            UniverseFrame = self.WholeDmxFrame[:len(self.WholeDmxFrame)/self.univ_qty]
+            print "UNIV_FRAME %s" % u
+            print UniverseFrame
+            data = array.array('B', UniverseFrame)
+            self._wrapper.Client().SendDmx(u, data)
 
     def StopDmxSender(self):
         self._activesender = False
@@ -151,18 +159,9 @@ class PlayScenari:
         print "patch, patch_after, univ"
         print self.patch, self.patch_after, self.universe
 
-        # init offset
-        self.poffset=""
-
-        # fill zeros to meet universe zone
-        if self.universe == 2:
-            for i in range(512):
-                self.poffset+="0."
-
-        # fill zeros to meet address
-        for i in range(self.patch):
-            self.poffset+="0."
-        print self.poffset
+        # change patch to meet universe zone
+        if self.universe > 1:
+            self.patch = self.patch + (512 * (self.universe-1))
 
         # fill zeros if splitted fixture
         self.pafter=""
