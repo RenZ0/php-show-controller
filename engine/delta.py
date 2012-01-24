@@ -42,17 +42,29 @@ class DmxSender:
         for e in range(len(engine)):
             freq_ms = engine[e]['freq_ms']
 
+        # FOR TEST
+        freq_ms = 1000
+
         self._tick_interval = int(freq_ms)  # in milliseconds
 
         print "freq_ms"
         print self._tick_interval
 
+        # FOR TEST
+        self.scen_list=(48,49)
+
         # dict to store each scenari instance
         self.my_scens={}
+
+        # array to store full frame
+        self.WholeDmxFrame = [0] * 512
 
         # send the first one
         self.SendDmxFrame()
         self._wrapper.Run()
+
+    def Assign(self,offset,values):
+        self.WholeDmxFrame[offset:offset+len(values)] = values
 
     def SendDmxFrame(self):
         '''Ask frame for each scenari and make the whole frame, repeated every tick_interval'''
@@ -80,16 +92,17 @@ class DmxSender:
             scen=self.my_scens[scenarid]
             scen.ComputeNextFrame()
             print "ComputeNextFrame"
-            print "sending %s" % scen.new_frame
+#            print "sending %s" % scen.new_frame
 
-            # sum all frames to make the whole one
-            self.WholeFrame = sum(self.WholeFrame,scen.new_frame) # TO DO
+            # add partial frame to full one
+            self.Assign(scen.patch, scen.new_frame)
+
             print "FRAME"
-            print self.WholeFrame
+            print self.WholeDmxFrame
 
         # send whole frame
-#        data = array.array('B', WholeFrame)
-#        self._wrapper.Client().SendDmx(1, data)
+        data = array.array('B', self.WholeDmxFrame)
+        self._wrapper.Client().SendDmx(1, data)
 
     def StopDmxSender(self):
         self._activesender = False
@@ -114,13 +127,13 @@ class PlayScenari:
     def __init__(self, scenari, tickint):
         '''Each instance if for only one scenari'''
 
-        self._scenari = scenari
+        self.scenari = scenari
         self.tick_interval = tickint
         self._activescenari = True
         self.base = com_sql.ComSql()
-        self.GetFixtureDetails
+        self.GetFixtureDetails()
         self.current_i = -1
-        self.GetNextStep
+        self.GetNextStep()
 
     def GetFixtureDetails(self):
         '''Fixture patch (define address), universe'''
@@ -160,7 +173,7 @@ class PlayScenari:
     def GetNextStep(self):
         '''Define the next step, fade/hold times, target values and delta'''
 
-        print "Define the next step %s" % self._scenari
+        print "Define the next step for scenari %s" % self.scenari
 
         # SQL Scen infos
         scendet = self.base.requete_sql("SELECT * FROM dmx_scensum WHERE id=%s", str(self.scenari)) #scen
@@ -190,8 +203,7 @@ class PlayScenari:
         self.hold_interval=int(float(sequence[self.current_i]['hold'])*1000)
 
         print "start"
-        if self.start_stepid == "":
-            self.start_stepid=sequence[self.current_i]['id']
+        self.start_stepid=sequence[self.current_i]['id']
         print self.start_stepid
 
 #        print "len seq"
@@ -204,9 +216,6 @@ class PlayScenari:
         print "end"
         self.end_stepid=sequence[self.current_i +1]['id']
         print self.end_stepid
-
-        # next step start from end
-        self.start_stepid = self.end_stepid
 
         self._counter = 0
         self._ticks = float(self.fade_interval) / self.tick_interval                                                                                      
@@ -221,10 +230,13 @@ class PlayScenari:
         print "delta"
         print self._delta
 
+#        # next step start from end
+#        self.start = self.end
+
     def GetDmxTrame(self, step_id):
         '''Compose trame for one step'''
 
-        alldmx=self.poffset
+        alldmx=""
         tramedmx = self.base.requete_sql("SELECT * FROM dmx_scenari WHERE id_scenari=%s AND step=%s ORDER BY id", str(self.scenari), str(step_id)) #step2
         for k in range(len(tramedmx)):
             #print(tramedmx[k]['ch_value'])
