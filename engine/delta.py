@@ -67,7 +67,7 @@ class DmxSender:
         self._wrapper.Run()
 
     def AssignChannels(self,offset,values):
-        '''Assign channels value according to address'''
+        '''Assign channels values according to address'''
         self.WholeDmxFrame[offset:offset+len(values)] = values
 
     def SendDmxFrame(self):
@@ -105,15 +105,23 @@ class DmxSender:
             print self.WholeDmxFrame
 
         # send data to universes
-        for u in range(self.univ_qty):
-            UniverseFrame = self.WholeDmxFrame[:len(self.WholeDmxFrame)/self.univ_qty]
-            print "UNIV_FRAME %s" % u
+        print "SPLIT"
+        SplittedFrame = self.split(self.WholeDmxFrame,512)
+
+        u=1
+        for FramePart in SplittedFrame:
+            UniverseFrame = list(FramePart)
+            print "FRAME_FOR_UNIV %s" % u
             print UniverseFrame
             data = array.array('B', UniverseFrame)
             self._wrapper.Client().SendDmx(u, data)
+            u = u+1
 
     def StopDmxSender(self):
         self._activesender = False
+
+    def split(self, l, n):
+        return zip(*(l[i::n] for i in range(n)))
 
 ###
 
