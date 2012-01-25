@@ -9,7 +9,7 @@
  * @link    http://jscolor.com
  *
  * @author  Laurent Pierru, <renzo@imaginux.com>
- * @updated 2011-08-14 (for dmx needs)
+ * @modified 2011-08-14 (for dmx needs)
  */
 
 
