@@ -103,11 +103,11 @@ class DmxSender:
             # add partial frame to full one
             self.AssignChannels(scen.patch, scen.new_frame)
 
-            print "FRAME"
-            print self.WholeDmxFrame
+#            print "FRAME"
+#            print self.WholeDmxFrame
 
         # send data to universes
-        print "SPLIT"
+#        print "SPLIT"
         SplittedFrame = self.split(self.WholeDmxFrame,512)
 
         u=1
@@ -227,7 +227,7 @@ class PlayScenari:
         print self.end_stepid
 
         self._counter = 0
-        self._ticks = float(self.fade_interval) / self.tick_interval                                                                                      
+        self._ticks = float(self.fade_interval) / self.tick_interval
 
         print "Iter"
         print self._ticks
@@ -272,7 +272,7 @@ class PlayScenari:
             self._frame = map(sum, zip(self._frame, self._delta))
 #            print self._frame
             self.new_frame = [int(round(x)) for x in self._frame]
-            return self.new_frame
+#            return self.new_frame
 
         else:
             print "Stop"
