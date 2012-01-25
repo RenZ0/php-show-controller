@@ -35,6 +35,7 @@ echo'<div id="sequence"><table cellpadding="5">';
 		echo'<td><b>Language</b></td>';
 		echo'<td><b>RGB</b></td>';
 		echo'<td><b>CMY</b></td>';
+		echo'<td><b>Univ.</b></td>';
 	echo'</tr>';
 
 	//$sqlf="SELECT * FROM dmx_preferences WHERE id=1";
@@ -45,7 +46,7 @@ echo'<div id="sequence"><table cellpadding="5">';
 	if ( isset($_POST['chgvalues']) )
 	{
 		//array values
-		$sqlg="UPDATE dmx_preferences SET lang='".$language."',display_rgb='".$display_rgb."',display_cmy='".$display_cmy."' WHERE id='".$id."'";
+		$sqlg="UPDATE dmx_preferences SET lang='".$language."',display_rgb='".$display_rgb."',display_cmy='".$display_cmy."',univ_qty='".$univ_qty."' WHERE id='".$id."'";
 		$sqlg=mysql_query($sqlg) or die(mysql_error());
 		//echo'OK';
 	}
@@ -60,6 +61,12 @@ echo'<div id="sequence"><table cellpadding="5">';
 			echo'<td><input name="language" value="'.$dataf[lang].'" size="4"></td>';
 			echo'<td><input name="display_rgb" type="checkbox" value="1"'; if($dataf[display_rgb]==1){echo'checked';} echo'></td>';
 			echo'<td><input name="display_cmy" type="checkbox" value="1"'; if($dataf[display_cmy]==1){echo'checked';} echo'></td>';
+
+			echo'<td><select name="univ_qty">';
+				for ($i=1;$i<=4;$i++){
+					echo'<option value="'.$i.'" '; if($dataf[univ_qty]==$i){echo'selected';} echo'>'.$i.'';
+				}
+			echo'</select></td>';
 
 			echo'<input name="id" value="'.$dataf[id].'" type="hidden">';
 

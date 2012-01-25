@@ -51,13 +51,15 @@ class DmxSender:
         print self._tick_interval
 
         # FOR TEST
-        self.scen_list=(48,49)
+        self.scen_list=(1,2)
 
         # dict to store each scenari instance
         self.my_scens={}
 
-        # number of universes
-        self.univ_qty = 2
+        # SQL Universes
+        prefs = self.base.requete_sql("SELECT * FROM dmx_preferences WHERE id=1") #setting
+        for p in range(len(prefs)):
+            self.univ_qty = prefs[p]['univ_qty']
 
         # array to store full frame
         self.WholeDmxFrame = [0] * 512 * self.univ_qty

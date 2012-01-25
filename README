@@ -3,7 +3,7 @@ PSC - Php-Show-Controller
 
 PSC provides an interface to create DMX shows, and play those thanks to OLA.
 
-Project Page: http://imaginux.com/lighting
+Project Page: http://imaginux.com/lighting/
 Licence: GNU General Public Licence 2 (See LICENCE)
 
 
@@ -70,6 +70,7 @@ How to use PSC ?
 
 0) Set language in Preferences : en = english, fr = french.
 RGB and CMY checkboxes are for display in scenario creation.
+Univ. is the number of universes you want to use.
 Engine Rate is set into database.
 
 1) Add your fixtures infos in Profiles page :

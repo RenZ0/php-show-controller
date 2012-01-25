@@ -96,7 +96,21 @@ function verif1()
 	echo'</select>';
 	echo' <b>'.TXT_PATCH.'</b> <input type="text" name="patch" size="3" value="'.$nextpatch.'">';
 	//echo' <b>After</b> <input type="text" name="patch_after" size="2" value="0">';
-	echo' <b>'.TXT_UNIVERSE.'</b> <input type="text" name="univ" size="1" value="'.$lastuniv.'">';
+	echo' <b>'.TXT_UNIVERSE.'</b> ';
+
+	//get universes limit
+	$sqlf="SELECT * FROM dmx_preferences ORDER BY id";
+	$sqlf=mysql_query($sqlf);
+	while ($dataf=mysql_fetch_array($sqlf)){
+		$univ_qty=$dataf[univ_qty];
+	}
+
+	echo'<select name="univ">';
+		for ($i=1;$i<=$univ_qty;$i++){
+			echo'<option value="'.$i.'" '; if($lastuniv==$i){echo'selected';} echo'>'.$i.'';
+		}
+	echo'</select>';
+
 	?>
 
 	<input type="submit" name="addfixture" value="<?=TXT_ADD?>">
