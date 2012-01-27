@@ -207,9 +207,9 @@ class PlayScenari:
         print "current i in seq"
         print self.current_i
 
-        # milliseconds ?
-        self.fade_interval=int(float(sequence[self.current_i]['fade'])*1000)
+        # milliseconds
         self.hold_interval=int(float(sequence[self.current_i]['hold'])*1000)
+        self.fade_interval=int(float(sequence[self.current_i]['fade'])*1000)
 
         print "start"
         self.start_stepid=sequence[self.current_i]['id']
@@ -233,26 +233,17 @@ class PlayScenari:
         # define first frame
         self._frame = self.start
 
-        # reset for each step
-        self.hold_done = 0
-        self.fade_done = 0
-
         # hold : reset counter and define ticks
-        self.hold_counter = 0
         self.hold_ticks = float(self.hold_interval) / self.tick_interval
-
-        if self.hold_ticks == 0:
-            self.hold_done = 1
+        self.hold_counter = self.hold_ticks
 
         # fade : reset counter and define ticks
-        self.fade_counter = 0
         self.fade_ticks = float(self.fade_interval) / self.tick_interval
-
-        if self.fade_ticks == 0:
-            self.fade_done = 1
+        self.fade_counter = self.fade_ticks
 
         # if not zero fade, define delta
-        else:
+        if self.fade_ticks != 0:
+
             self._delta = [float(b - a) / self.fade_ticks for a, b in zip(self.start, self.end)]
             print "delta"
             print self._delta
@@ -282,24 +273,22 @@ class PlayScenari:
 
         if self._activescenari:
             # play hold first
-            if self.hold_done == 0:
-                #
-                self.hold_counter += 1
+            if self.hold_counter != 0:
+
+                self.hold_counter -= 1
                 print "hold counter"
                 print self.hold_counter
 
                 # start frame
                 self.new_frame = [int(round(x)) for x in self._frame]
 
-                if self.hold_counter >= self.hold_ticks:
-                    print "HOLD DONE"
-                    self.hold_done = 1
             else:
                 pass
+
             # play fade after
-            if self.hold_done == 1 and self.fade_done == 0:
-                #
-                self.fade_counter += 1
+            if self.hold_counter == 0 and self.fade_counter != 0:
+
+                self.fade_counter -= 1
                 print "fade counter"
                 print self.fade_counter
 
@@ -307,14 +296,11 @@ class PlayScenari:
                 self._frame = map(sum, zip(self._frame, self._delta))
                 self.new_frame = [int(round(x)) for x in self._frame]
 
-                if self.fade_counter >= self.fade_ticks:
-                    print "FADE DONE"
-                    self.fade_done = 1
             else:
                 pass
 
             # if all completed, call the next step
-            if self.hold_done == 1 and self.fade_done == 1:
+            if self.hold_counter == 0 and self.fade_counter == 0:
                 print "NEXT STEP"
                 self.GetNextStep()
 
