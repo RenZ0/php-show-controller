@@ -21,7 +21,7 @@
 """Php-Show-Controller. TCP Server to control scenarios."""
 
 import SocketServer
-from delta_testd import DmxSender
+from delta import DmxSender
 from config import HOST, PORT
 #from threading import Lock
 import time
@@ -45,8 +45,8 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
     client.
     """
 
-#    global scen_dict
-#    scen_dict = {}
+#    global scen_list
+#    scen_list = {}
 #    lock=Lock()
 
     def handle(self):
@@ -60,67 +60,54 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         except:
             command=self.data
 
-        self.ZeDelta = DmxSender()
+        self.DS = DmxSender()
 
         if command=="start":
-            if not self.scen_dict.has_key(scenarid):
-#                t= DeltaDmx(scenarid, lambda:self.terminate(scenarid))
-                self.ZeDelta.scen_dict[scenarid]
-#                t.start()
+            if not self.scen_list.has_key(scenarid):
+                # add id into list
+                self.DS.scen_list.extend(scenarid)
                 status=1
         
         if command=="stop":
-            try:
-                t=self.scen_dict[scenarid]
-                t.stop()
-                t.join()
-                if not t.is_alive():
-                    status=1
-            except:
-                #import traceback
-                #print traceback.format_exc()
-                pass
+            if self.scen_list.has_key(scenarid):
+                # remove id from list
+                self.DS.scen_list.pop(scenarid)
+                status=1
             
         if command=="status":
-            try:
-                data=self.scen_dict[scenarid].state()
-                status=1
-            except:
-                pass
+            if self.scen_list.has_key(scenarid):
+                # tell if running
+                data="%s running" % scenarid
 
         if command=="list":
             try:
-                print self.scen_dict.keys()
-                data=reduce(lambda x,y : y+'.'+x, self.scen_dict.keys())
+                print self.scen_list.keys()
+                data=reduce(lambda x,y : y+'.'+x, self.scen_list.keys())
             except:
                 pass
 
         if command=="stopall":
-            for t in self.scen_dict.itervalues():
-                t.stop()
+            for scenarid in self.scen_list.itervalues():
+                self.DS.scen_list.pop(scenarid)
                 status=1
 
         if command=="bo":
-            for t in self.scen_dict.itervalues():
-                t.stop()
-                #status=1
-            time.sleep(0.25)
-            if not self.scen_dict.has_key(0):
-                t= DeltaDmx(0, lambda:self.terminate(0))
-                self.scen_dict[0]=t
-                t.start()
+            # stopall
+            for scenarid in self.scen_list.itervalues():
+                self.DS.scen_list.pop(scenarid)
                 status=1
+            # add id 0 for 1 sec
+            self.DS.scen_list.extend(0)
+            time.sleep(1000)
+            self.DS.scen_list.pop(0)
 
         response=str(status)
         if data is not None:
             response=response+":"+data
 
         self.request.send(response)
-    
-    def terminate(self,scenarid):
-        if self.lock.acquire():
-            self.scen_dict.pop(scenarid)
-            self.lock.release()
+
+###
 
 if __name__=="__main__":
 
