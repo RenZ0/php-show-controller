@@ -43,7 +43,7 @@ class DmxSender:
             freq_ms = engine[e]['freq_ms']
 
         # FOR TEST
-        freq_ms = 500
+#        freq_ms = 500
 
         self._tick_interval = int(freq_ms)  # in milliseconds
 
@@ -131,13 +131,13 @@ class DmxSender:
 #    def __init__(self):
 #        '''Send zeros on all channels'''
 
-#        trame=""
+#        frame=""
 #        for i in range(512):
-#            trame+="0."
-#        trame=trame[:-1]
-#        print trame
+#            frame+="0."
+#        frame=frame[:-1]
+#        print frame
 
-#        ei=[int(k) for k in trame.split(".")]
+#        ei=[int(k) for k in frame.split(".")]
 
 ###
 
@@ -226,30 +226,51 @@ class PlayScenari:
         self.end_stepid=sequence[self.current_i +1]['id']
         print self.end_stepid
 
-        self._counter = 0
-        self._ticks = float(self.fade_interval) / self.tick_interval
+        # compose frame for step and next step
+        self.start=self.GetDmxFrame(self.start_stepid)
+        self.end=self.GetDmxFrame(self.end_stepid)
 
-        print "Iter"
-        print self._ticks
-
-        self.start=self.GetDmxTrame(self.start_stepid)
-        self.end=self.GetDmxTrame(self.end_stepid)
+        # define first frame
         self._frame = self.start
-        self._delta = [float(b - a) / self._ticks for a, b in zip(self.start, self.end)]
-        print "delta"
-        print self._delta
+
+        # reset for each step
+        self.hold_done = 0
+        self.fade_done = 0
+
+        # hold : reset counter and define ticks
+        self.hold_counter = 0
+        self.hold_ticks = float(self.hold_interval) / self.tick_interval
+
+        if self.hold_ticks == 0:
+            self.hold_done = 1
+
+        # fade : reset counter and define ticks
+        self.fade_counter = 0
+        self.fade_ticks = float(self.fade_interval) / self.tick_interval
+
+        if self.fade_ticks == 0:
+            self.fade_done = 1
+
+        # if not zero fade, define delta
+        else:
+            self._delta = [float(b - a) / self.fade_ticks for a, b in zip(self.start, self.end)]
+            print "delta"
+            print self._delta
+
+            print "Iter"
+            print self.fade_ticks
 
 #        # next step start from end
 #        self.start = self.end
 
-    def GetDmxTrame(self, step_id):
-        '''Compose trame for one step'''
+    def GetDmxFrame(self, step_id):
+        '''Compose frame for one step'''
 
         alldmx=""
-        tramedmx = self.base.requete_sql("SELECT * FROM dmx_scenari WHERE id_scenari=%s AND step=%s ORDER BY id", str(self.scenari), str(step_id)) #step2
-        for k in range(len(tramedmx)):
-            #print(tramedmx[k]['ch_value'])
-            alldmx+=tramedmx[k]['ch_value']
+        framedmx = self.base.requete_sql("SELECT * FROM dmx_scenari WHERE id_scenari=%s AND step=%s ORDER BY id", str(self.scenari), str(step_id)) #step2
+        for k in range(len(framedmx)):
+            #print(framedmx[k]['ch_value'])
+            alldmx+=framedmx[k]['ch_value']
             alldmx+="."
         alldmx+=self.pafter
         alldmx=alldmx[:-1]
@@ -257,22 +278,45 @@ class PlayScenari:
         return [int(k) for k in alldmx.split(".")]
 
     def ComputeNextFrame(self):
-        '''Return trame + delta according to fade'''
-
-        # if step completed, call the next one
-        if self._counter >= self._ticks:
-            print "NEXT STEP"
-            self.GetNextStep()
+        '''Return frame according to hold and fade'''
 
         if self._activescenari:
-            self._counter += 1
-            print "it counter"
-            print self._counter
-    #        self._frame = self.start
-            self._frame = map(sum, zip(self._frame, self._delta))
-#            print self._frame
-            self.new_frame = [int(round(x)) for x in self._frame]
-#            return self.new_frame
+            # play hold first
+            if self.hold_done == 0:
+                #
+                self.hold_counter += 1
+                print "hold counter"
+                print self.hold_counter
+
+                # start frame
+                self.new_frame = [int(round(x)) for x in self._frame]
+
+                if self.hold_counter >= self.hold_ticks:
+                    print "HOLD DONE"
+                    self.hold_done = 1
+            else:
+                pass
+            # play fade after
+            if self.hold_done == 1 and self.fade_done == 0:
+                #
+                self.fade_counter += 1
+                print "fade counter"
+                print self.fade_counter
+
+                # compute fade frame
+                self._frame = map(sum, zip(self._frame, self._delta))
+                self.new_frame = [int(round(x)) for x in self._frame]
+
+                if self.fade_counter >= self.fade_ticks:
+                    print "FADE DONE"
+                    self.fade_done = 1
+            else:
+                pass
+
+            # if all completed, call the next step
+            if self.hold_done == 1 and self.fade_done == 1:
+                print "NEXT STEP"
+                self.GetNextStep()
 
         else:
             print "Stop"
