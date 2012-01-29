@@ -68,6 +68,9 @@ class DmxSender:
         self.SendDmxFrame()
         self._wrapper.Run()
 
+    def BlackOut(self):
+        self.WholeDmxFrame = [0] * 512 * self.univ_qty
+
     def AssignChannels(self,offset,values):
         '''Assign channels values according to address'''
         self.WholeDmxFrame[offset:offset+len(values)] = values
@@ -124,22 +127,6 @@ class DmxSender:
 
     def split(self, l, n):
         return zip(*(l[i::n] for i in range(n)))
-
-###
-
-#class BlackOut:
-#    def __init__(self):
-#        '''Send zeros on all channels'''
-
-#        frame=""
-#        for i in range(512):
-#            frame+="0."
-#        frame=frame[:-1]
-#        print frame
-
-#        ei=[int(k) for k in frame.split(".")]
-
-###
 
 class PlayScenari:
     def __init__(self, scenari, tickint):
