@@ -25,15 +25,27 @@ import sys
 import time
 import array
 import com_sql
+from threading import Thread
 from ola.ClientWrapper import ClientWrapper
 
 ###
 
-class DmxSender:
-    def __init__(self, wrapper):
+class DmxSender(Thread):
+    def __init__(self):
+        Thread.__init__(self)
+        self.Terminated = False
+#        self.term=term
+
+    ## Stop the thread if called
+    def stop(self):
+        self.Terminated = True
+
+    def run(self):
         '''Wrapper, Framerate'''
 
-        self._wrapper = wrapper
+        print "THREAD"
+
+        self._wrapper = ClientWrapper()
         self._activesender = True
         self.base = com_sql.ComSql()
 
@@ -50,8 +62,7 @@ class DmxSender:
         print "freq_ms"
         print self._tick_interval
 
-        # FOR TEST
-        self.scen_list=(1,2)
+        self.scen_ids={}
 
         # dict to store each scenari instance
         self.my_scens={}
@@ -87,7 +98,7 @@ class DmxSender:
             self._wrapper.Stop()
 
         #for each scenari in list
-        for scenarid in self.scen_list:
+        for scenarid in self.scen_ids:
 
             # create scenari instance if needed
             if not self.my_scens.has_key(scenarid):
@@ -298,9 +309,6 @@ class PlayScenari:
         self._activescenari = False
 
         ##################
-
-wrapper = ClientWrapper()
-sender = DmxSender(wrapper)
 
         ##################
 
