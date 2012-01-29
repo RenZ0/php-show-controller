@@ -33,6 +33,10 @@ import time
 # list      : list of sequences currently playing
 # stopall   : stops all sequences currently playing
 
+# start only one thread
+DS = DmxSender()
+DS.start()
+
 class MyTCPServer(SocketServer.TCPServer):
     allow_reuse_address=True
 
@@ -45,10 +49,6 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
     client.
     """
 
-#    global scen_list
-#    scen_list = {}
-#    lock=Lock()
-
     def handle(self):
         # self.request is the TCP socket connected to the client
 
@@ -60,46 +60,45 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         except:
             command=self.data
 
-        self.DS = DmxSender()
+        if command=="halt":
+            DS.StopDmxSender()
 
         if command=="start":
-            if not self.scen_list.has_key(scenarid):
+            if not DS.scen_ids.has_key(scenarid):
                 # add id into list
-                self.DS.scen_list.extend(scenarid)
+                DS.scen_ids[scenarid]=0
                 status=1
         
         if command=="stop":
-            if self.scen_list.has_key(scenarid):
+            if DS.scen_ids.has_key(scenarid):
                 # remove id from list
-                self.DS.scen_list.pop(scenarid)
+                DS.scen_ids.pop(scenarid)
                 status=1
             
         if command=="status":
-            if self.scen_list.has_key(scenarid):
+            if DS.scen_ids.has_key(scenarid):
                 # tell if running
                 data="%s running" % scenarid
 
         if command=="list":
             try:
-                print self.scen_list.keys()
-                data=reduce(lambda x,y : y+'.'+x, self.scen_list.keys())
+                print DS.scen_ids.keys()
+                data=reduce(lambda x,y : y+'.'+x, DS.scen_ids.keys())
             except:
                 pass
 
         if command=="stopall":
-            for scenarid in self.scen_list.itervalues():
-                self.DS.scen_list.pop(scenarid)
+            for scenarid in DS.scen_ids:
+                DS.scen_ids.pop(scenarid)
                 status=1
 
         if command=="bo":
             # stopall
-            for scenarid in self.scen_list.itervalues():
-                self.DS.scen_list.pop(scenarid)
+            for scenarid in DS.scen_ids:
+                DS.scen_ids.pop(scenarid)
                 status=1
-            # add id 0 for 1 sec
-            self.DS.scen_list.extend(0)
-            time.sleep(1000)
-            self.DS.scen_list.pop(0)
+            # bo
+            DS.BlackOut()
 
         response=str(status)
         if data is not None:
