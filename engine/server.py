@@ -23,7 +23,6 @@
 import SocketServer
 from delta import DmxSender
 from config import HOST, PORT
-#from threading import Lock
 import time
 
 # tcp server commands :
@@ -62,43 +61,42 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
 
         if command=="halt":
             DS.StopDmxSender()
+            status=1
 
         if command=="start":
-            if not DS.scen_ids.has_key(scenarid):
+            if not scenarid in DS.scen_ids:
                 # add id into list
-                DS.scen_ids[scenarid]=0
+                DS.scen_ids.append(scenarid)
                 status=1
         
         if command=="stop":
-            if DS.scen_ids.has_key(scenarid):
+            if scenarid in DS.scen_ids:
                 # remove id from list
-                DS.scen_ids.pop(scenarid)
+                DS.scen_ids.remove(scenarid)
                 status=1
             
         if command=="status":
-            if DS.scen_ids.has_key(scenarid):
+            if scenarid in DS.scen_ids:
                 # tell if running
                 data="%s running" % scenarid
 
         if command=="list":
             try:
-                print DS.scen_ids.keys()
-                data=reduce(lambda x,y : y+'.'+x, DS.scen_ids.keys())
+#                print DS.scen_ids
+                data=reduce(lambda x,y : y+'.'+x, DS.scen_ids)
             except:
                 pass
 
         if command=="stopall":
-            for scenarid in DS.scen_ids:
-                DS.scen_ids.pop(scenarid)
-                status=1
+            DS.scen_ids=[]
+            status=1
 
         if command=="bo":
             # stopall
-            for scenarid in DS.scen_ids:
-                DS.scen_ids.pop(scenarid)
-                status=1
+            DS.scen_ids=[]
             # bo
             DS.BlackOut()
+            status=1
 
         response=str(status)
         if data is not None:
@@ -110,11 +108,9 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
 
 if __name__=="__main__":
 
-    # Create the server, binding to localhost on port 9999
+    # Create the server
     server = MyTCPServer((HOST, PORT), MyTCPHandler)
 
-    # Activate the server; this will keep running until you
-    # interrupt the program with Ctrl-C
+    # Activate the server
     server.serve_forever()
-
 

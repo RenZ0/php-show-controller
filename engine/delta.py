@@ -62,7 +62,7 @@ class DmxSender(Thread):
         print "freq_ms"
         print self._tick_interval
 
-        self.scen_ids={}
+        self.scen_ids=[]
 
         # dict to store each scenari instance
         self.my_scens={}
@@ -128,7 +128,7 @@ class DmxSender(Thread):
         for FramePart in SplittedFrame:
             UniverseFrame = list(FramePart)
             print "FRAME_FOR_UNIV %s" % u
-            print UniverseFrame
+#            print UniverseFrame
             data = array.array('B', UniverseFrame)
             self._wrapper.Client().SendDmx(u, data)
             u = u+1
@@ -308,7 +308,10 @@ class PlayScenari:
     def StopScenari(self):
         self._activescenari = False
 
-        ##################
+###
 
-        ##################
+if __name__=="__main__":
+
+    DS = DmxSender()
+    DS.start()
 
