@@ -18,6 +18,7 @@
 # Copyright (C) 2011 Laurent Pierru <renzo@imaginux.com>
 # Thanks to Stéphane Bonhomme <stephane@exselt.com>
 # Thanks to Simon Newton <nomis52@gmail.com>
+# Thanks to Heikki Junnila
 
 """Php-Show-Controller. Generates values and sends data to OLA."""
 
