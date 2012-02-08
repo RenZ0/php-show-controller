@@ -68,13 +68,19 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
                 # add id into list
                 DS.scen_ids.append(scenarid)
                 status=1
-        
+
         if command=="stop":
             if scenarid in DS.scen_ids:
                 # remove id from list
                 DS.scen_ids.remove(scenarid)
                 status=1
-            
+
+        if command=="reset":
+            if DS.my_scens.has_key(scenarid):
+                # remove instance for this id
+                DS.my_scens.pop(scenarid)
+                status=1
+
         if command=="status":
             if scenarid in DS.scen_ids:
                 # tell if running

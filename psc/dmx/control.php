@@ -46,6 +46,13 @@ echo'<td><input type="submit" name="go" value="stop"></td>';
 echo'</form>';
 
 echo'<form action="scenari.php?id='.$id.'" method="post" style="margin-top: 0px; margin-bottom: 0px">';
+echo'<input type="hidden" name="act" value="reset.'.$id.'">';
+echo'<td><input type="submit" name="go" value="reset"></td>';
+echo'</form>';
+
+echo'<td width="10"></td>';
+
+echo'<form action="scenari.php?id='.$id.'" method="post" style="margin-top: 0px; margin-bottom: 0px">';
 echo'<input type="hidden" name="act" value="stopall">';
 echo'<td><input type="submit" name="go" value="stopall"></td>';
 echo'</form>';

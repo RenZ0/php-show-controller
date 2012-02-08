@@ -102,6 +102,11 @@ if ($list=='all'){
 				echo'<td><input type="submit" name="go" value="stop"></td>';
 				echo'</form>';
 				//
+				echo'<form action="panel.php?list=all&multi='.$multi.'" method="post" style="margin-top: 0px; margin-bottom: 0px">';
+				echo'<input type="hidden" name="act" value="reset.'.$datab[id].'">';
+				echo'<td><input type="submit" name="go" value="reset"></td>';
+				echo'</form>';
+				//
 			}
 
 			//get fixture (escalier)
@@ -124,7 +129,9 @@ if ($list=='all'){
 			echo'<input type="submit" name="act" value="start">';
 			echo' Offset<input type="text" name="offset" value="0" size="1">sec<br>';
 			//
-			echo'<input type="submit" name="act" value="stop">';
+			echo'<input type="submit" name="act" value="stop"><br>';
+			//
+			echo'<input type="submit" name="act" value="reset">';
 			//
 			echo'</form>';
 		}else{
