@@ -1,7 +1,3 @@
-Engine (in progress)
-*Add a merge function to allow playing multiple scenarios at once
-*Blackout should be done on every universe
-
 Interface
 *Enhance the scenario editor with ajax requests
 *Add a function to ajust a color already assigned
@@ -10,6 +6,7 @@ Interface
 
 Base
 *Make an index page to share fixture profiles
+*Make a program to import XML fixture files from QLC
 
 Code
 *Declare all variables to allow register_globals = Off

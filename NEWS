@@ -1,3 +1,12 @@
+X/Y/2012 php-show-controller 1.1.0
+
+ * New engine allowing :
+    multiple scenarios at once
+    full blackout
+    scenario resuming
+
+ * Universes setting in preferences
+
 31/12/2011 php-show-controller 1.0.1
  * Scenario editor fixes
 

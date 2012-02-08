@@ -21,7 +21,7 @@ Installation
 ------------
 
 First, you need to set up your webserver, for example on debian/ubuntu :
-sudo apt-get install apache2 mysql-server php5-mysql phpmyadmin
+sudo apt-get install apache2 mysql-server php5-mysql phpmyadmin python-mysqldb
 
 Configure php with register_globals = On :
 sudo gedit /etc/php5/apache2/php.ini
@@ -70,7 +70,7 @@ How to use PSC ?
 
 0) Set language in Preferences : en = english, fr = french.
 RGB and CMY checkboxes are for display in scenario creation.
-Univ. is the number of universes you want to use.
+Univ. is the number of universes you want to use (set up in OLA).
 Engine Rate is set into database.
 
 1) Add your fixtures infos in Profiles page :
@@ -130,19 +130,6 @@ Keep in mind :
 With php interface you change sql data.
 Python engine reads sql data, and send it to OLA.
 OLA use your hardware to send DMX signal.
-
-
-Known Issues
-------------
-
-Currently it's better to play only one scenario at once.
-One scenario can control more than one fixture (creating Multi),
-but it's limited because of synchronization.
-If you want to play many scenarios, you could set universe in HTP merge mode,
-and it could work but there will be too much frames.
-OLA port limiter will do its job according to your device and your settings.
-
-It could be good to have a merge function, it's in todo list :)
 
 
 Bugs
