@@ -131,7 +131,7 @@ class DmxSender(Thread):
 #            print UniverseFrame
             data = array.array('B', UniverseFrame)
             self._wrapper.Client().SendDmx(u, data)
-            u = u+1
+            u += 1
 
     def StopDmxSender(self):
         self._activesender = False
@@ -201,7 +201,7 @@ class PlayScenari:
             sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position DESC,id DESC", str(self.scenari)) #seq
 
         # each time we call this function, increase i to get the next step of sequence
-        self.current_i = self.current_i +1
+        self.current_i += 1
         print "current i in seq"
         print self.current_i
 
