@@ -1,9 +1,11 @@
-X/Y/2012 php-show-controller 1.1.0
+16/02/2012 php-show-controller 1.1.0
 
  * New engine allowing :
     multiple scenarios at once
-    full blackout
+    blackout on all universes
     scenario resuming
+
+ * Reset button to start from first step
 
  * Universes setting in preferences
 
