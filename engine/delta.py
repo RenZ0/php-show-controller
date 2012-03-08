@@ -207,38 +207,48 @@ class PlayScenari:
 #        print "len seq"
 #        print (len(self.sequence))
 
-        # each time we call this function, increase i to get the next step of sequence
-        self.current_i += 1
-        print "current i in seq"
-        print self.current_i
+        if len(self.sequence)!=0:
 
-        # reloop if needed
-        if (self.current_i) >= (len(self.sequence)):
-            self.current_i = 0
-            print "reloop"
+            # each time we call this function, increase i to get the next step of sequence
+            self.current_i += 1
+            print "current i in seq"
+            print self.current_i
 
-        # get stepid
-        print "nextplay"
-        self.nextplay_stepid=self.sequence[self.current_i]['id']
-        print self.nextplay_stepid
+            # reloop if needed
+            if (self.current_i) >= (len(self.sequence)):
+                self.current_i = 0
+                print "reloop"
 
-        # compose frame for step
-        self.nextplay=self.GetDmxFrame(self.nextplay_stepid)
+            # get stepid
+            print "nextplay"
+            self.nextplay_stepid=self.sequence[self.current_i]['id']
+            print self.nextplay_stepid
+
+            # compose frame for step
+            self.nextplay=self.GetDmxFrame(self.nextplay_stepid)
+
+        else:
+            pass
 
     def GetNextTicks(self):
         '''Define hold and fade times for current step'''
 
-        # milliseconds
-        self.hold_interval=int(float(self.sequence[self.current_i]['hold'])*1000)
-        self.fade_interval=int(float(self.sequence[self.current_i]['fade'])*1000)
+        if len(self.sequence)!=0:
 
-        # hold : reset counter and define ticks
-        self.hold_ticks = float(self.hold_interval) / self.tick_interval
-        self.hold_counter = self.hold_ticks
+            # milliseconds
+            self.hold_interval=int(float(self.sequence[self.current_i]['hold'])*1000)
+            self.fade_interval=int(float(self.sequence[self.current_i]['fade'])*1000)
 
-        # fade : reset counter and define ticks
-        self.fade_ticks = float(self.fade_interval) / self.tick_interval
-        self.fade_counter = self.fade_ticks
+            # hold : reset counter and define ticks
+            self.hold_ticks = float(self.hold_interval) / self.tick_interval
+            self.hold_counter = self.hold_ticks
+
+            # fade : reset counter and define ticks
+            self.fade_ticks = float(self.fade_interval) / self.tick_interval
+            self.fade_counter = self.fade_ticks
+
+        else:
+            pass
 
     def GetNextDelta(self):
         '''Delta between playing and next frame'''
