@@ -63,6 +63,7 @@ class DmxSender(Thread):
         print "freq_ms"
         print self._tick_interval
 
+        # list of scens to play
         self.scen_ids=[]
 
         # dict to store each scenari instance
@@ -81,6 +82,7 @@ class DmxSender(Thread):
         self._wrapper.Run()
 
     def BlackOut(self):
+        '''Reset all values to zero'''
         self.WholeDmxFrame = [0] * 512 * self.univ_qty
 
     def AssignChannels(self,offset,values):
@@ -123,7 +125,7 @@ class DmxSender(Thread):
 
         # send data to universes
 #        print "SPLIT"
-        SplittedFrame = self.split(self.WholeDmxFrame,512)
+        SplittedFrame = self.USplit(self.WholeDmxFrame,512)
 
         u=1
         for FramePart in SplittedFrame:
@@ -137,7 +139,7 @@ class DmxSender(Thread):
     def StopDmxSender(self):
         self._activesender = False
 
-    def split(self, l, n):
+    def USplit(self, l, n):
         return zip(*(l[i::n] for i in range(n)))
 
 class PlayScenari:
@@ -151,6 +153,7 @@ class PlayScenari:
         self.GetFixtureDetails()
         self.current_i = -1
         self.GetNextStep()
+        self.ChangeStep()
 
     def GetFixtureDetails(self):
         '''Fixture patch (define address), universe'''
@@ -179,7 +182,7 @@ class PlayScenari:
         print self.pafter
 
     def GetNextStep(self):
-        '''Define the next step, fade/hold times, target values and delta'''
+        '''Define the next step and compose frame'''
 
         print "Define the next step for scenari %s" % self.scenari
 
@@ -197,40 +200,37 @@ class PlayScenari:
 
         # SQL Sequence
         if self.reverse==0:
-            sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position ASC,id ASC", str(self.scenari)) #seq
+            self.sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position ASC,id ASC", str(self.scenari)) #seq
         else:
-            sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position DESC,id DESC", str(self.scenari)) #seq
+            self.sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position DESC,id DESC", str(self.scenari)) #seq
+
+#        print "len seq"
+#        print (len(self.sequence))
 
         # each time we call this function, increase i to get the next step of sequence
         self.current_i += 1
         print "current i in seq"
         print self.current_i
 
-        # milliseconds
-        self.hold_interval=int(float(sequence[self.current_i]['hold'])*1000)
-        self.fade_interval=int(float(sequence[self.current_i]['fade'])*1000)
-
-        print "start"
-        self.start_stepid=sequence[self.current_i]['id']
-        print self.start_stepid
-
-#        print "len seq"
-#        print (len(sequence))
-
-        if (self.current_i +1) == (len(sequence)):
-            self.current_i = -1
+        # reloop if needed
+        if (self.current_i) >= (len(self.sequence)):
+            self.current_i = 0
             print "reloop"
 
-        print "end"
-        self.end_stepid=sequence[self.current_i +1]['id']
-        print self.end_stepid
+        # get stepid
+        print "nextplay"
+        self.nextplay_stepid=self.sequence[self.current_i]['id']
+        print self.nextplay_stepid
 
-        # compose frame for step and next step
-        self.start=self.GetDmxFrame(self.start_stepid)
-        self.end=self.GetDmxFrame(self.end_stepid)
+        # compose frame for step
+        self.nextplay=self.GetDmxFrame(self.nextplay_stepid)
 
-        # define first frame
-        self._frame = self.start
+    def GetNextTicks(self):
+        '''Define hold and fade times for current step'''
+
+        # milliseconds
+        self.hold_interval=int(float(self.sequence[self.current_i]['hold'])*1000)
+        self.fade_interval=int(float(self.sequence[self.current_i]['fade'])*1000)
 
         # hold : reset counter and define ticks
         self.hold_ticks = float(self.hold_interval) / self.tick_interval
@@ -240,18 +240,37 @@ class PlayScenari:
         self.fade_ticks = float(self.fade_interval) / self.tick_interval
         self.fade_counter = self.fade_ticks
 
+    def GetNextDelta(self):
+        '''Delta between playing and next frame'''
+
         # if not zero fade, define delta
         if self.fade_ticks != 0:
 
-            self._delta = [float(b - a) / self.fade_ticks for a, b in zip(self.start, self.end)]
+            self._delta = [float(b - a) / self.fade_ticks for a, b in zip(self.playing, self.nextplay)]
             print "delta"
             print self._delta
 
             print "Iter"
             print self.fade_ticks
 
-#        # next step start from end
-#        self.start = self.end
+        else:
+            pass
+
+    def SwitchFrame(self):
+        '''Frame just reached become playing one'''
+
+        self.playing = self.nextplay
+
+        # define first frame
+        self._frame = self.playing
+
+    def ChangeStep(self):
+        '''Set playing parameters'''
+
+        self.GetNextTicks()
+        self.SwitchFrame()
+        self.GetNextStep()
+        self.GetNextDelta()
 
     def GetDmxFrame(self, step_id):
         '''Compose frame for one step'''
@@ -278,7 +297,7 @@ class PlayScenari:
                 print "hold counter"
                 print self.hold_counter
 
-                # start frame
+                # playing frame
                 self.new_frame = [int(round(x)) for x in self._frame]
 
             else:
@@ -301,7 +320,7 @@ class PlayScenari:
             # if all completed, call the next step
             if self.hold_counter == 0 and self.fade_counter == 0:
                 print "NEXT STEP"
-                self.GetNextStep()
+                self.ChangeStep()
 
         else:
             print "Stop"
