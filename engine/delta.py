@@ -294,7 +294,25 @@ class PlayScenari:
         alldmx+=self.pafter
         alldmx=alldmx[:-1]
         print alldmx
-        return [int(k) for k in alldmx.split(".")]
+
+        dmxval = alldmx.split(".")
+        dmxnum = []
+
+        try:
+            for x in [int(k) for k in dmxval]:
+                if x < 0 or x > 255:
+                    raise
+                else:
+                    # add valid channel
+                    dmxnum.append(x)
+        except:
+            print "bad values"
+            # set channels to zero
+            dmxnum = [0,] * len(dmxval)
+
+        print dmxnum
+        #
+        return dmxnum
 
     def ComputeNextFrame(self):
         '''Return frame according to hold and fade'''
