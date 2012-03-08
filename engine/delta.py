@@ -205,7 +205,7 @@ class PlayScenari:
             self.sequence = self.base.requete_sql("SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=%s ORDER BY position DESC,id DESC", str(self.scenari)) #seq
 
 #        print "len seq"
-#        print (len(self.sequence))
+#        print len(self.sequence)
 
         if len(self.sequence)!=0:
 
@@ -215,7 +215,7 @@ class PlayScenari:
             print self.current_i
 
             # reloop if needed
-            if (self.current_i) >= (len(self.sequence)):
+            if self.current_i >= len(self.sequence):
                 self.current_i = 0
                 print "reloop"
 
@@ -311,7 +311,8 @@ class PlayScenari:
             dmxnum = [0,] * len(dmxval)
 
         print dmxnum
-        #
+
+        # return valid frame
         return dmxnum
 
     def ComputeNextFrame(self):
