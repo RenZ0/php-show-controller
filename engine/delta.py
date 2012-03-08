@@ -102,26 +102,28 @@ class DmxSender(Thread):
 
         #for each scenari in list
         for scenarid in self.scen_ids:
+            try:
+                # create scenari instance if needed
+                if not self.my_scens.has_key(scenarid):
+                    scen=PlayScenari(scenarid, self._tick_interval)
 
-            # create scenari instance if needed
-            if not self.my_scens.has_key(scenarid):
-                scen=PlayScenari(scenarid, self._tick_interval)
+                    # store instance in dict, only once
+                    self.my_scens[scenarid]=scen
+                    print self.my_scens
 
-                # store instance in dict, only once
-                self.my_scens[scenarid]=scen
-                print self.my_scens
+                # for each instance, compute frame
+                scen=self.my_scens[scenarid]
+                scen.ComputeNextFrame()
+                print "ComputeNextFrame"
+#                print "sending %s" % scen.new_frame
 
-            # for each instance, compute frame
-            scen=self.my_scens[scenarid]
-            scen.ComputeNextFrame()
-            print "ComputeNextFrame"
-#            print "sending %s" % scen.new_frame
+                # add partial frame to full one
+                self.AssignChannels(scen.patch, scen.new_frame)
 
-            # add partial frame to full one
-            self.AssignChannels(scen.patch, scen.new_frame)
-
-#            print "FRAME"
-#            print self.WholeDmxFrame
+#                print "FRAME"
+#                print self.WholeDmxFrame
+            except:
+                print "NOT STARTED"
 
         # send data to universes
 #        print "SPLIT"
