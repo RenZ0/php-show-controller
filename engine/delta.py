@@ -237,9 +237,17 @@ class PlayScenari:
 
         if len(self.sequence)!=0:
 
-            # milliseconds
-            self.hold_interval=int(float(self.sequence[self.current_i]['hold'])*1000)
-            self.fade_interval=int(float(self.sequence[self.current_i]['fade'])*1000)
+            hold_time=self.sequence[self.current_i]['hold']
+            fade_time=self.sequence[self.current_i]['fade']
+
+            try:
+                # milliseconds
+                self.hold_interval=abs(int(float(hold_time)*1000))
+                self.fade_interval=abs(int(float(fade_time)*1000))
+            except:
+                print "bad times"
+                self.hold_interval=0
+                self.fade_interval=0
 
             # hold : reset counter and define ticks
             self.hold_ticks = float(self.hold_interval) / self.tick_interval
