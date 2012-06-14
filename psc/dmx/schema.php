@@ -23,6 +23,8 @@
 require("../config.php");
 include("menu.php");
 
+$id = $_GET['id'];
+
 //nom du schema
 $sql="SELECT * FROM dmx_schsum WHERE id=$id";
 $sql=mysql_query($sql);
@@ -85,32 +87,32 @@ echo'</tr></table></div>';
 //add ch to schema
 if ( isset($_POST['addch']) )
 {
-    if ($ch_name=="master"){
+    if ($_POST['ch_name']=="master"){
         $ch_defvalue="255";
         $ch_info="intensity";
     }
-    elseif ($ch_name=="rgb" or $ch_name=="off" or $ch_name=="special" or $ch_name=="rotate"){
+    elseif ($_POST['ch_name']=="rgb" or $_POST['ch_name']=="off" or $_POST['ch_name']=="special" or $_POST['ch_name']=="rotate"){
         $ch_defvalue="0.0.0";
     }
-    elseif ($ch_name=="cmy"){
+    elseif ($_POST['ch_name']=="cmy"){
         $ch_defvalue="255.255.255";
     }
     else{
         $ch_defvalue="0";
     }
     //
-    if ($ch_name=="rgb" or $ch_name=="cmy"){
+    if ($_POST['ch_name']=="rgb" or $_POST['ch_name']=="cmy"){
         $ch_info="color";
     }
 	//
-    if ($ch_name=="white"){
+    if ($_POST['ch_name']=="white"){
         $ch_info="white";
     }
 	//
 	$i=0;
-	while ( $i<$qty ){
+	while ( $i<$_POST['qty'] ){
 		$n=$i+1;
-		$sqla="INSERT INTO dmx_schema VALUES('','$id','$ch_name$n','$ch_defvalue','$ch_info')";
+		$sqla="INSERT INTO dmx_schema VALUES('','$id','$_POST[ch_name]$n','$ch_defvalue','$ch_info')";
 		$sqla=mysql_query($sqla) or die(mysql_error());
 		echo"add$n-";
 		$i++;
@@ -120,10 +122,10 @@ if ( isset($_POST['addch']) )
 //add ch to schema from another one
 if ( isset($_POST['addchfromschema']) )
 {
-	$i=$numfrom;
-	while ( $i < ($numfrom+$qty) ){
+	$i=$_POST['numfrom'];
+	while ( $i < ($_POST['numfrom']+$_POST['qty']) ){
 		//
-		$sqlj="SELECT * FROM dmx_schema WHERE id_schema=$schema_src ORDER BY id";
+		$sqlj="SELECT * FROM dmx_schema WHERE id_schema=$_POST[schema_src] ORDER BY id";
 		$sqlj=mysql_query($sqlj);
 		while ($dataj=mysql_fetch_array($sqlj)){
 			$sqla="INSERT INTO dmx_schema VALUES('','$id','$dataj[ch_name]-a$i','$dataj[ch_defvalue]','$dataj[ch_info]')";
@@ -133,11 +135,11 @@ if ( isset($_POST['addchfromschema']) )
 		$i++;
 	}
 
-	$sqli="SELECT * FROM dmx_schsum WHERE id=$schema_src";
+	$sqli="SELECT * FROM dmx_schsum WHERE id=$_POST[schema_src]";
 	$sqli=mysql_query($sqli);
 	while ($datai=mysql_fetch_array($sqli)){
 		//
-		$total_ch=$datai[nb_channels]*$qty;
+		$total_ch=$datai[nb_channels]*$_POST['qty'];
 		echo' (+'.$total_ch.' channels)';
 		//
 	}
@@ -153,7 +155,7 @@ if ( isset($_POST['chgdefch']) )
 {
 	#array values
 	for ($j = 0; $j < $testf; $j++) {
-		$sqlg="UPDATE dmx_schema SET ch_name='".$ch_name[$j]."',ch_defvalue='".$ch_defvalue[$j]."',ch_info='".$ch_info[$j]."' WHERE id='".$ch_id[$j]."'";
+		$sqlg="UPDATE dmx_schema SET ch_name='".$_POST['ch_name'][$j]."',ch_defvalue='".$_POST['ch_defvalue'][$j]."',ch_info='".$_POST['ch_info'][$j]."' WHERE id='".$_POST['ch_id'][$j]."'";
 		$sqlg=mysql_query($sqlg) or die(mysql_error());
 		//echo'ok_';
 	}
@@ -165,7 +167,7 @@ if ( isset($_POST['chgdefallch']) )
 {
 	#array values
 	for ($j = 0; $j < $testf; $j++) {
-		$sqlg="UPDATE dmx_schema SET ch_defvalue='".$allch_defvalue."' WHERE id='".$ch_id[$j]."'";
+		$sqlg="UPDATE dmx_schema SET ch_defvalue='".$_POST['allch_defvalue']."' WHERE id='".$_POST['ch_id'][$j]."'";
 		$sqlg=mysql_query($sqlg) or die(mysql_error());
 		//echo'ok_';
 	}

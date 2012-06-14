@@ -54,7 +54,7 @@ function verif1()
 //add schema
 if ( isset($_POST['addschema']) )
 {
-	$sqla="INSERT INTO dmx_schsum VALUES('','$schema_name','$nb_channels','')";
+	$sqla="INSERT INTO dmx_schsum VALUES('','$_POST[schema_name]','$_POST[nb_channels]','')";
 	$sqla=mysql_query($sqla) or die(mysql_error());
 	echo''.TXT_SCHEMA_ADDED.'<br><br>';
 }
@@ -66,6 +66,8 @@ while ($datab=mysql_fetch_array($sqlb)){
 }
 
 echo'<br><a href="schmod.php">('.TXT_EDIT.')</a>';
+
+//print_r($_POST);
 
 ?>
 

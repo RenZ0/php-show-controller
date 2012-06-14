@@ -24,7 +24,7 @@ require("../config.php");
 require("funct.php");
 include("menu.php");
 
-$delsch=($_GET['delsch']);
+$delsch = $_GET['delsch'];
 
 //delete schema (in schsum, and schema channels)
 if ( isset($_GET['delsch']) )
@@ -74,7 +74,7 @@ echo'<div id="sequence"><table>';
 	{
 		//array values
 		for ($j = 0; $j < $testf; $j++) {
-			$sqlg="UPDATE dmx_schsum SET schema_name='".$schema_name[$j]."',nb_channels='".$nb_channels[$j]."' WHERE id='".$id[$j]."'";
+			$sqlg="UPDATE dmx_schsum SET schema_name='".$_POST['schema_name'][$j]."',nb_channels='".$_POST['nb_channels'][$j]."' WHERE id='".$_POST['id'][$j]."'";
 			$sqlg=mysql_query($sqlg) or die(mysql_error());
 			//echo'ok_';
 		}

@@ -46,7 +46,7 @@ echo'<div id="sequence"><table cellpadding="5">';
 	if ( isset($_POST['chgvalues']) )
 	{
 		//array values
-		$sqlg="UPDATE dmx_preferences SET lang='".$language."',display_rgb='".$display_rgb."',display_cmy='".$display_cmy."',univ_qty='".$univ_qty."' WHERE id='".$id."'";
+		$sqlg="UPDATE dmx_preferences SET lang='".$_POST['language']."',display_rgb='".$_POST['display_rgb']."',display_cmy='".$_POST['display_cmy']."',univ_qty='".$_POST['univ_qty']."' WHERE id='".$_POST['id']."'";
 		$sqlg=mysql_query($sqlg) or die(mysql_error());
 		//echo'OK';
 	}
