@@ -23,6 +23,8 @@
 require("../config.php");
 include("menu.php");
 
+$disfix = $_GET['disfix'];
+
 //disable fixture
 if ( isset($_GET['disfix']) )
 {
@@ -35,7 +37,7 @@ if ( isset($_GET['disfix']) )
 //add fixture
 if ( isset($_POST['addfixture']) )
 {
-	$sqla="INSERT INTO dmx_fixture VALUES('','$fixture_name','$id_schema','$patch','$patch_after','$univ','')";
+	$sqla="INSERT INTO dmx_fixture VALUES('','$_POST[fixture_name]','$_POST[id_schema]','$_POST[patch]','$_POST[patch_after]','$_POST[univ]','')";
 	$sqla=mysql_query($sqla) or die(mysql_error());
 	//echo"Fixture added<br>";
 }
@@ -168,6 +170,8 @@ while ($data=mysql_fetch_array($sql)){
 }
 
 echo'<br><a href="fixtmod.php">('.TXT_EDIT.')</a>';
+
+//print_r($_POST);
 
 ?>
 

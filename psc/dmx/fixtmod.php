@@ -73,7 +73,7 @@ echo'<div id="sequence"><table>';
 	{
 		//array values
 		for ($j = 0; $j < $testf; $j++) {
-			$sqlg="UPDATE dmx_fixture SET fixture_name='".$fixture_name[$j]."',id_schema='".$id_schema[$j]."',patch='".$patch[$j]."',patch_after='".$patch_after[$j]."',univ='".$univ[$j]."' WHERE id='".$id[$j]."'";
+			$sqlg="UPDATE dmx_fixture SET fixture_name='".$_POST['fixture_name'][$j]."',id_schema='".$_POST['id_schema'][$j]."',patch='".$_POST['patch'][$j]."',patch_after='".$_POST['patch_after'][$j]."',univ='".$_POST['univ'][$j]."' WHERE id='".$_POST['id'][$j]."'";
 			$sqlg=mysql_query($sqlg) or die(mysql_error());
 			//echo'ok_';
 		}
