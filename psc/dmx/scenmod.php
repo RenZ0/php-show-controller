@@ -135,7 +135,7 @@ echo'<div id="sequence"><table>';
 	{
 		//array values
 		for ($j = 0; $j < $testf; $j++) {
-			$sqlg="UPDATE dmx_scensum SET scenari_name='".$scenari_name[$j]."',id_fixture='".$id_fixture[$j]."' WHERE id='".$id[$j]."'";
+			$sqlg="UPDATE dmx_scensum SET scenari_name='".$_POST['scenari_name'][$j]."',id_fixture='".$_POST['id_fixture'][$j]."' WHERE id='".$_POST['id'][$j]."'";
 			$sqlg=mysql_query($sqlg) or die(mysql_error());
 			//echo'ok_';
 		}

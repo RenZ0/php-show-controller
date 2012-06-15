@@ -39,7 +39,7 @@ if ( isset($_GET['newcolor']) ){
 	* <input type="text" name="qty" value="1" size="2">
 	<select name="ch_name">
 		<option value="rgb">rgb
-		<option value="cmy" <?if (isset($iscmy)){echo'selected';}?>>cmy
+		<option value="cmy" <?if (isset($_GET['iscmy'])){echo'selected';}?>>cmy
 		<option value="">none
 	</select>
 	<input type="text" name="colorvalue" value="<?=$newcolor?>" size="8">
@@ -86,17 +86,17 @@ if ( isset($_POST['chgallpos']) )
 //add color(s)
 if ( isset($_POST['addcolor']) )
 {
-    if ($ch_name=="rgb" or $ch_name=="cmy"){
-        $ch_defvalue=$colorvalue;
+    if ($_POST['ch_name']=="rgb" or $_POST['ch_name']=="cmy"){
+        $ch_defvalue=$_POST['colorvalue'];
     }
     else{
         $ch_defvalue="0";
     }
 
 	$i=0;
-	while ( $i<$qty ){
+	while ( $i<$_POST['qty'] ){
 		$n=$i+1;
-		$sqla="INSERT INTO dmx_colors VALUES('','$colorname$n','$ch_name','$ch_defvalue','100','')";
+		$sqla="INSERT INTO dmx_colors VALUES('','$_POST[colorname]$n','$_POST[ch_name]','$ch_defvalue','100','')";
 		$sqla=mysql_query($sqla) or die(mysql_error());
 		echo"add$n-";
 		$i++;
@@ -121,7 +121,7 @@ echo'<table><tr>';
 	{
 		//array values
 		for ($j = 0; $j < $testf; $j++) {
-			$sqlg="UPDATE dmx_colors SET colorname='".$colorname[$j]."',ch_value='".$ch_value[$j]."',position='".$position[$j]."' WHERE id='".$ch_id[$j]."'";
+			$sqlg="UPDATE dmx_colors SET colorname='".$_POST['colorname'][$j]."',ch_value='".$_POST['ch_value'][$j]."',position='".$_POST['position'][$j]."' WHERE id='".$_POST['ch_id'][$j]."'";
 			$sqlg=mysql_query($sqlg) or die(mysql_error());
 			//echo'ok_';
 		}

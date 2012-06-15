@@ -64,7 +64,7 @@ function verif1()
 //add scenari
 if ( isset($_POST['addscenari']) )
 {
-	$sqla="INSERT INTO dmx_scensum VALUES('','$scenari_name','$id_fixture','','')";
+	$sqla="INSERT INTO dmx_scensum VALUES('','$_POST[scenari_name]','$_POST[id_fixture]','','')";
 	$sqla=mysql_query($sqla) or die(mysql_error());
 	echo''.TXT_SCENARIO_ADDED.'<br>';
 
@@ -136,6 +136,8 @@ while ($data=mysql_fetch_array($sql)){
 }
 
 echo'<br><a href="scenmod.php">('.TXT_EDIT.')</a>';
+
+//print_r($_POST);
 
 ?>
 
