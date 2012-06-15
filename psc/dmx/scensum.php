@@ -89,7 +89,7 @@ if ( isset($_POST['addscenari']) )
 if ( isset($_GET['discen']) )
 {
     //set disabled
-    $sqlh="UPDATE dmx_scensum SET disabled='1' WHERE id=$discen";
+    $sqlh="UPDATE dmx_scensum SET disabled='1' WHERE id='".$_GET['discen']."'";
     $sqlh=mysql_query($sqlh) or die(mysql_error());
 
     echo'<i>'.TXT_SCENARIO_DISABLED.'</i><br>';

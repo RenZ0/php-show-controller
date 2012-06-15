@@ -24,17 +24,15 @@ require("../config.php");
 require("funct.php");
 include("menu.php");
 
-$delsch = $_GET['delsch'];
-
 //delete schema (in schsum, and schema channels)
 if ( isset($_GET['delsch']) )
 {
     //remove all values of schema
-    $sqlh="DELETE FROM dmx_schema WHERE id_schema=$delsch";
+    $sqlh="DELETE FROM dmx_schema WHERE id_schema='".$_GET['delsch']."'";
     $sqlh=mysql_query($sqlh) or die(mysql_error());
 
     //remove schema from schsum
-    $sqlh="DELETE FROM dmx_schsum WHERE id=$delsch";
+    $sqlh="DELETE FROM dmx_schsum WHERE id='".$_GET['delsch']."'";
     $sqlh=mysql_query($sqlh) or die(mysql_error());
 
     echo'<i>'.TXT_SCHEMA_DELETED.'</i>';

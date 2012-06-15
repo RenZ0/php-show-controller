@@ -23,13 +23,11 @@
 require("../config.php");
 include("menu.php");
 
-$disfix = $_GET['disfix'];
-
 //disable fixture
 if ( isset($_GET['disfix']) )
 {
     //set disabled
-    $sqlh="UPDATE dmx_fixture SET disabled='1' WHERE id=$disfix";
+    $sqlh="UPDATE dmx_fixture SET disabled='1' WHERE id='".$_GET['disfix']."'";
     $sqlh=mysql_query($sqlh) or die(mysql_error());
     //echo'<i>Fixture disabled</i><br>';
 }

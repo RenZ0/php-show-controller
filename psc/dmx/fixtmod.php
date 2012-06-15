@@ -24,13 +24,11 @@ require("../config.php");
 require("funct.php");
 include("menu.php");
 
-$delfixt=($_GET['delfixt']);
-
 //delete fixture
 if ( isset($_GET['delfixt']) )
 {
     //remove fixture from fixture
-    $sqlh="DELETE FROM dmx_fixture WHERE id=$delfixt";
+    $sqlh="DELETE FROM dmx_fixture WHERE id='".$_GET['delfixt']."'";
     $sqlh=mysql_query($sqlh) or die(mysql_error());
 
     echo'<i>'.TXT_FIXTURE_DELETED.'</i>';

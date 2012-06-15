@@ -50,13 +50,11 @@ if ( isset($_GET['newcolor']) ){
 
 <?
 
-$delcolor=($_GET['delcolor']);
-
 //delete color
 if ( isset($_GET['delcolor']) )
 {
     //remove color from colors
-    $sqlh="DELETE FROM dmx_colors WHERE id=$delcolor";
+    $sqlh="DELETE FROM dmx_colors WHERE id='".$_GET['delcolor']."'";
     $sqlh=mysql_query($sqlh) or die(mysql_error());
 
     echo'<i>'.TXT_COLOR_DELETED.'</i>';

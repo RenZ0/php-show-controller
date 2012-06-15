@@ -24,22 +24,19 @@ require("../config.php");
 require("funct.php");
 include("menu.php");
 
-$delscen=($_GET['delscen']);
-$dupscen=($_GET['dupscen']);
-
 //delete scenari (in scensum, in scenseq and scenari channels)
 if ( isset($_GET['delscen']) )
 {
     //remove all values of scenari
-    $sqlh="DELETE FROM dmx_scenari WHERE id_scenari=$delscen";
+    $sqlh="DELETE FROM dmx_scenari WHERE id_scenari='".$_GET['delscen']."'";
     $sqlh=mysql_query($sqlh) or die(mysql_error());
 
     //remove all steps of scenari
-    $sqlh="DELETE FROM dmx_scenseq WHERE id_scenari=$delscen";
+    $sqlh="DELETE FROM dmx_scenseq WHERE id_scenari='".$_GET['delscen']."'";
     $sqlh=mysql_query($sqlh) or die(mysql_error());
 
     //remove scenari from scensum
-    $sqlh="DELETE FROM dmx_scensum WHERE id=$delscen";
+    $sqlh="DELETE FROM dmx_scensum WHERE id='".$_GET['delscen']."'";
     $sqlh=mysql_query($sqlh) or die(mysql_error());
 
     echo'<i>'.TXT_SCENARIO_DELETED.'</i>';
@@ -63,7 +60,7 @@ if ( isset($_POST['alldisabled']) )
 if ( isset($_GET['dupscen']) )
 {
 	//regarde le scensum
-	$sqlb="SELECT * FROM dmx_scensum WHERE id=$dupscen ORDER BY id";
+	$sqlb="SELECT * FROM dmx_scensum WHERE id='".$_GET['dupscen']."' ORDER BY id";
 	$sqlb=mysql_query($sqlb);
 	while ($datab=mysql_fetch_array($sqlb)){
 		//ajoute le meme
@@ -75,14 +72,14 @@ if ( isset($_GET['dupscen']) )
 	$last_id=mysql_insert_id();
 
 	//regarde le scenseq
-	$sqlb="SELECT * FROM dmx_scenseq WHERE id_scenari=$dupscen ORDER BY id";
+	$sqlb="SELECT * FROM dmx_scenseq WHERE id_scenari='".$_GET['dupscen']."' ORDER BY id";
 	$sqlb=mysql_query($sqlb);
 	$p=0;
 	while ($datab=mysql_fetch_array($sqlb)){
 		//add step 0 (names)
 		if ($p==0){
 			//regarde le step content for this entry (id_scenari mandatory)
-			$sqle="SELECT * FROM dmx_scenari WHERE id_scenari=$dupscen AND step=0 ORDER BY id";
+			$sqle="SELECT * FROM dmx_scenari WHERE id_scenari='".$_GET['dupscen']."' AND step=0 ORDER BY id";
 			$sqle=mysql_query($sqle);
 			while ($datae=mysql_fetch_array($sqle)){
 				//ajoute le meme
@@ -101,7 +98,7 @@ if ( isset($_GET['dupscen']) )
 		$last_step=mysql_insert_id();
 
 		//regarde le step content for this entry (id_scenari optional)
-		$sqle="SELECT * FROM dmx_scenari WHERE id_scenari=$dupscen AND step=$datab[id] ORDER BY id";
+		$sqle="SELECT * FROM dmx_scenari WHERE id_scenari='".$_GET['dupscen']."' AND step=$datab[id] ORDER BY id";
 		$sqle=mysql_query($sqle);
 		while ($datae=mysql_fetch_array($sqle)){
 			//ajoute le meme
