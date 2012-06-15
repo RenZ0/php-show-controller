@@ -36,7 +36,7 @@ if (isset($act)){
 			//SOCKET
 			sendtoserver("$act.$val",$tcp_host,$tcp_port);
 			//
-			sleep($offset);
+			sleep($_POST['offset']);
 		}
 	}else{
 		//SOCKET
