@@ -27,6 +27,8 @@ require("funct.php");
 include("menu.php");
 include("control.php");
 
+$id = $_GET['id'];
+
 //light
 if ( isset($_POST['unset_light']) )
 {
@@ -83,7 +85,7 @@ if ( isset($_POST['set_default']) )
 if ( isset($_GET['way']) )
 {
 	//set way
-	$sqlb="UPDATE dmx_scensum SET reverse=$way WHERE id=$id";
+	$sqlb="UPDATE dmx_scensum SET reverse='".$_GET['way']."' WHERE id=$id";
 	$sqlb=mysql_query($sqlb);
 }
 
@@ -196,10 +198,10 @@ echo'<div class="sideborder"><table><tr>
 //update for all steps
 if ( isset($_POST['superchg']) )
 {
-	if ($newvalueman!=""){
-		$newvalue=$newvalueman;
+	if ($_POST['newvalueman']!=""){
+		$newvalue=$_POST['newvalueman'];
 	}else{
-		$newvalue=$newvaluetab;
+		$newvalue=$_POST['newvaluetab'];
 	}
 
 	if ($likevalue!=""){
@@ -223,12 +225,12 @@ if ( isset($_POST['superchg']) )
 //add one step using schema
 if ( isset($_POST['addstep']) )
 {
-	if ($hold=="0" AND $fade=="0"){
+	if ($_POST['hold']=="0" AND $_POST['fade']=="0"){
 		echo''.TXT_ZEROS_ERROR.'';
-	}elseif ($hold!="" AND $fade!=""){
+	}elseif ($_POST['hold']!="" AND $_POST['fade']!=""){
 
 		//ajoute le pas dans sequence
-		$sqld="INSERT INTO dmx_scenseq VALUES('','$id','$stepname','$hold','$fade','100','')";
+		$sqld="INSERT INTO dmx_scenseq VALUES('','$id','$_POST[stepname]','$_POST[hold]','$_POST[fade]','100','')";
 		$sqld=mysql_query($sqld) or die(mysql_error());
 		$last_id=mysql_insert_id();
 
@@ -258,7 +260,7 @@ if ( isset($_POST['addstep']) )
 if ( isset($_GET['dupstep']) )
 {
 	//regarde le scenseq for this step
-	$sqlb="SELECT * FROM dmx_scenseq WHERE id=$dupstep";
+	$sqlb="SELECT * FROM dmx_scenseq WHERE id='".$_GET['dupstep']."'";
 	$sqlb=mysql_query($sqlb);
 	while ($datab=mysql_fetch_array($sqlb)){
 		//ajoute le meme, entry in seq
@@ -269,7 +271,7 @@ if ( isset($_GET['dupstep']) )
 		$last_step=mysql_insert_id();
 
 		//regarde le step content
-		$sqle="SELECT * FROM dmx_scenari WHERE step=$dupstep ORDER BY id";
+		$sqle="SELECT * FROM dmx_scenari WHERE step='".$_GET['dupstep']."' ORDER BY id";
 		$sqle=mysql_query($sqle);
 		while ($datae=mysql_fetch_array($sqle)){
 			//ajoute le meme
@@ -455,7 +457,7 @@ if ( isset($_GET['paintfrom']) )
 if ( isset($_GET['distep']) )
 {
 	//disable step of scenseq
-	$sqlb="UPDATE dmx_scenseq SET disabled='1' WHERE id=$distep";
+	$sqlb="UPDATE dmx_scenseq SET disabled='1' WHERE id='".$_GET['distep']."'";
 	$sqlb=mysql_query($sqlb);
 }
 
@@ -475,7 +477,7 @@ echo'<table><tr>';
 		//array values
 		for ($j = 0; $j < $testf; $j++) {
 			//if ($ch_name[$j]!=""){
-				$sqlg="UPDATE dmx_scenari SET ch_name='".$ch_name[$j]."' WHERE id='".$ch_id[$j]."'";
+				$sqlg="UPDATE dmx_scenari SET ch_name='".$_POST['ch_name'][$j]."' WHERE id='".$_POST['ch_id'][$j]."'";
 				$sqlg=mysql_query($sqlg) or die(mysql_error());
 				//echo'ok_';
 			//}
@@ -676,8 +678,8 @@ echo'<table><tr>';
 		{
 			//array values
 			for ($j = 0; $j < $testf; $j++) {
-				if ($ch_value[$j]!=""){
-					$sqlg="UPDATE dmx_scenari SET ch_value='".$ch_value[$j]."' WHERE id='".$ch_id[$j]."'";
+				if ($_POST['ch_value'][$j]!=""){
+					$sqlg="UPDATE dmx_scenari SET ch_value='".$_POST['ch_value'][$j]."' WHERE id='".$_POST['ch_id'][$j]."'";
 					$sqlg=mysql_query($sqlg) or die(mysql_error());
 					//echo'ok_';
 				}
@@ -903,7 +905,7 @@ echo'<table><tr>';
 echo'</tr></table>';
 
 //echo'<div class="carre" style="background-color:'.rgb2html(255,0,255).';"></div><br>';
-//print_r($_POST);
+print_r($_POST);
 
 ?>
 

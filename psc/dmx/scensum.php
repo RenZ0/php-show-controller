@@ -71,7 +71,7 @@ if ( isset($_POST['addscenari']) )
 	$last_id=mysql_insert_id();
 
 	//regarde le fixture
-	$sqle="SELECT * FROM dmx_fixture WHERE id=$id_fixture";
+	$sqle="SELECT * FROM dmx_fixture WHERE id=$_POST[id_fixture]";
 	$sqle=mysql_query($sqle);
 	while ($datae=mysql_fetch_array($sqle)){
 		//regarde le schema correspondant

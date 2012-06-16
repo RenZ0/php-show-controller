@@ -25,6 +25,8 @@ require("funct.php");
 include("menu.php");
 include("controlseq.php");
 
+$id = $_GET['id'];
+
 //reverse
 if ( isset($_GET['way']) )
 {
