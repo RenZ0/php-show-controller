@@ -26,19 +26,19 @@
 
 				if ( isset($_POST['chgallval']) )
 				{
-					$new_allch_value=$allch_value;
+					$new_allch_value=$_POST['allch_value'];
 				}
 				elseif ( isset($_POST['chgallvaljs_rgb']) )
 				{
-					$new_allch_value=$allch_valuejs_rgb;
+					$new_allch_value=$_POST['allch_valuejs_rgb'];
 				}
 				elseif ( isset($_POST['chgallvaljs_cmy']) )
 				{
-					$new_allch_value=$allch_valuejs_cmy;
+					$new_allch_value=$_POST['allch_valuejs_cmy'];
 				}
 				elseif ( isset($_POST['chgallvalmy']) )
 				{
-					$new_allch_value=$allch_valuemy;
+					$new_allch_value=$_POST['allch_valuemy'];
 				}
 
 			//que les cases cochees
@@ -57,10 +57,10 @@
 			}elseif ( ( isset($_POST['chgallvaljs_rgb']) || isset($_POST['chgallvalmy']) ) AND (!isset($_POST['colorstab'])) ){
 				//array values
 				for ($j = 0; $j < $testf; $j++) {
-					$match=substr($ch_name[$j], 0, 3);
-					//echo"".$ch_name[$j]." $match<br>";
+					$match=substr($_POST['ch_name'][$j], 0, 3);
+					//echo"".$_POST['ch_name'][$j]." $match<br>";
 					if ($match=='rgb'){
-						$sqlg="UPDATE $table_dmx1 SET ch_value='".$new_allch_value."' WHERE id='".$ch_id[$j]."'";
+						$sqlg="UPDATE $table_dmx1 SET ch_value='".$new_allch_value."' WHERE id='".$_POST['ch_id'][$j]."'";
 						$sqlg=mysql_query($sqlg) or die(mysql_error());
 						//echo'ok_';
 					}
@@ -70,10 +70,10 @@
 			}elseif ( (isset($_POST['chgallvaljs_cmy'])) AND (!isset($_POST['colorstab'])) ){
 				//array values
 				for ($j = 0; $j < $testf; $j++) {
-					$match=substr($ch_name[$j], 0, 3);
-					//echo"".$ch_name[$j]." $match<br>";
+					$match=substr($_POST['ch_name'][$j], 0, 3);
+					//echo"".$_POST['ch_name'][$j]." $match<br>";
 					if ($match=='cmy'){
-						$sqlg="UPDATE $table_dmx1 SET ch_value='".$new_allch_value."' WHERE id='".$ch_id[$j]."'";
+						$sqlg="UPDATE $table_dmx1 SET ch_value='".$new_allch_value."' WHERE id='".$_POST['ch_id'][$j]."'";
 						$sqlg=mysql_query($sqlg) or die(mysql_error());
 						//echo'ok_';
 					}
@@ -83,10 +83,10 @@
 			}elseif ( (isset($_POST['chgallval'])) AND (!isset($_POST['colorstab'])) AND $new_allch_value!="" AND (!isset($_SESSION['filter_exp'])) ){
 				//array values
 				for ($j = 0; $j < $testf; $j++) {
-					$match=substr($ch_name[$j], 0, 3);
-					//echo"".$ch_name[$j]." $match<br>";
+					$match=substr($_POST['ch_name'][$j], 0, 3);
+					//echo"".$_POST['ch_name'][$j]." $match<br>";
 					if ($match=='rgb'){
-						$sqlg="UPDATE $table_dmx1 SET ch_value='".$new_allch_value."' WHERE id='".$ch_id[$j]."'";
+						$sqlg="UPDATE $table_dmx1 SET ch_value='".$new_allch_value."' WHERE id='".$_POST['ch_id'][$j]."'";
 						$sqlg=mysql_query($sqlg) or die(mysql_error());
 						//echo'ok_';
 					}
@@ -96,10 +96,10 @@
 			}elseif ( (isset($_POST['chgallval'])) AND (!isset($_POST['colorstab'])) AND $new_allch_value!="" ){
 				//array values
 				for ($j = 0; $j < $testf; $j++) {
-					//$match=substr($ch_name[$j], 0, 3);
-					//echo"".$ch_name[$j]." $match<br>";
+					//$match=substr($_POST['ch_name'][$j], 0, 3);
+					//echo"".$_POST['ch_name'][$j]." $match<br>";
 					//if ($match==''){
-						$sqlg="UPDATE $table_dmx1 SET ch_value='".$new_allch_value."' WHERE id='".$ch_id[$j]."'";
+						$sqlg="UPDATE $table_dmx1 SET ch_value='".$new_allch_value."' WHERE id='".$_POST['ch_id'][$j]."'";
 						$sqlg=mysql_query($sqlg) or die(mysql_error());
 						//echo'ok_';
 					//}
@@ -134,10 +134,10 @@
 					$rand2=rand(0,255);
 					$rand3=rand(0,255);
 					$random_value="$rand1.$rand2.$rand3";
-					$match=substr($ch_name[$j], 0, 3);
-					//echo"".$ch_name[$j]." $match<br>";
+					$match=substr($_POST['ch_name'][$j], 0, 3);
+					//echo"".$_POST['ch_name'][$j]." $match<br>";
 					if ($match=='rgb'){
-						$sqlg="UPDATE $table_dmx1 SET ch_value='".$random_value."' WHERE id='".$ch_id[$j]."'";
+						$sqlg="UPDATE $table_dmx1 SET ch_value='".$random_value."' WHERE id='".$_POST['ch_id'][$j]."'";
 						$sqlg=mysql_query($sqlg) or die(mysql_error());
 						//echo'ok_';
 					}
@@ -161,8 +161,8 @@
 				//echo"_$nb_rgb";
 
 				//get array to increment each channel
-				$src_color=explode('.',$ch_value_src);
-				$dst_color=explode('.',$ch_value_dst);
+				$src_color=explode('.',$_POST['ch_value_src']);
+				$dst_color=explode('.',$_POST['ch_value_dst']);
 
 				//define variation (delta / nb)
 				for($k=0; $k<3; $k++){
@@ -182,25 +182,25 @@
 
 						for($k=0; $k<3; $k++){
 
-		                    if ($offset!=""){
-		                        if ($n>$offset){
+		                    if ($_POST['offset']!=""){
+		                        if ($n>$_POST['offset']){
 		                            //echo"normal<br>";
 								    //normal
 								    if (($src_color[$k]-$dst_color[$k]) < 0){
-		                				$src_color_new[$k] = $src_color[$k]+ ( ($n-$offset)*$color_color[$k] );
+		                				$src_color_new[$k] = $src_color[$k]+ ( ($n-$_POST['offset'])*$color_color[$k] );
 								    }else{
-		                				$src_color_new[$k] = $src_color[$k]- ( ($n-$offset)*$color_color[$k] );
+		                				$src_color_new[$k] = $src_color[$k]- ( ($n-$_POST['offset'])*$color_color[$k] );
 								    }
 		                        }else{
 		                            //echo"reverse<br>";
 		                            //reverse
 								    if (($src_color[$k]-$dst_color[$k]) < 0){
-		                				$src_color_new[$k] = $src_color[$k]+ ( ($offset-$n)*$color_color[$k] );
+		                				$src_color_new[$k] = $src_color[$k]+ ( ($_POST['offset']-$n)*$color_color[$k] );
 								    }else{
-		                				$src_color_new[$k] = $src_color[$k]- ( ($offset-$n)*$color_color[$k] );
+		                				$src_color_new[$k] = $src_color[$k]- ( ($_POST['offset']-$n)*$color_color[$k] );
 								    }
 		                        }
-		                        //echo"n=$n,offset=$offset<br>";
+		                        //echo"n=$n,offset=$_POST['offset']<br>";
 		                    }else{
 								//define if increase or decrease
 								if (($src_color[$k]-$dst_color[$k]) < 0){
@@ -242,32 +242,32 @@
 				//array values
 		        $n=-1;
 				for ($j = 0; $j < $testf; $j++) {
-					$match=substr($ch_name[$j], 0, 3);
-					//echo"".$ch_name[$j]." $match<br>";
+					$match=substr($_POST['ch_name'][$j], 0, 3);
+					//echo"".$_POST['ch_name'][$j]." $match<br>";
 					if ($match=='rgb'){
 		            $n++;
 
 						for($k=0; $k<3; $k++){
 
-		                    if ($offset!=""){
-		                        if ($n>$offset){
+		                    if ($_POST['offset']!=""){
+		                        if ($n>$_POST['offset']){
 		                            //echo"normal<br>";
 								    //normal
 								    if (($src_color[$k]-$dst_color[$k]) < 0){
-		                				$src_color_new[$k] = $src_color[$k]+ ( ($n-$offset)*$color_color[$k] );
+		                				$src_color_new[$k] = $src_color[$k]+ ( ($n-$_POST['offset'])*$color_color[$k] );
 								    }else{
-		                				$src_color_new[$k] = $src_color[$k]- ( ($n-$offset)*$color_color[$k] );
+		                				$src_color_new[$k] = $src_color[$k]- ( ($n-$_POST['offset'])*$color_color[$k] );
 								    }
 		                        }else{
 		                            //echo"reverse<br>";
 		                            //reverse
 								    if (($src_color[$k]-$dst_color[$k]) < 0){
-		                				$src_color_new[$k] = $src_color[$k]+ ( ($offset-$n)*$color_color[$k] );
+		                				$src_color_new[$k] = $src_color[$k]+ ( ($_POST['offset']-$n)*$color_color[$k] );
 								    }else{
-		                				$src_color_new[$k] = $src_color[$k]- ( ($offset-$n)*$color_color[$k] );
+		                				$src_color_new[$k] = $src_color[$k]- ( ($_POST['offset']-$n)*$color_color[$k] );
 								    }
 		                        }
-		                        //echo"n=$n,offset=$offset<br>";
+		                        //echo"n=$n,offset=$_POST['offset']<br>";
 		                    }else{
 								//define if increase or decrease
 								if (($src_color[$k]-$dst_color[$k]) < 0){
@@ -298,7 +298,7 @@
 						$ch_value_new.=$src_color_new[2];
 						//echo"just end:$ch_value_new";
 
-						$sqlg="UPDATE $table_dmx1 SET ch_value='".$ch_value_new."' WHERE id='".$ch_id[$j]."'";
+						$sqlg="UPDATE $table_dmx1 SET ch_value='".$ch_value_new."' WHERE id='".$_POST['ch_id'][$j]."'";
 						$sqlg=mysql_query($sqlg) or die(mysql_error());
 						//echo'ok_';
 					}

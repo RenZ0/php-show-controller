@@ -31,7 +31,7 @@ $id = $_GET['id'];
 if ( isset($_GET['way']) )
 {
 	//set way
-	$sqlb="UPDATE dmx_scensum SET reverse=$way WHERE id=$id";
+	$sqlb="UPDATE dmx_scensum SET reverse='".$_GET['way']."' WHERE id=$id";
 	$sqlb=mysql_query($sqlb);
 }
 
@@ -69,10 +69,10 @@ echo'<br>';
 //delete step (in scenseq and scenari channels)
 if ( isset($_GET['delstep']) )
 {
-	$sqlh="DELETE FROM dmx_scenseq WHERE id=$delstep";
+	$sqlh="DELETE FROM dmx_scenseq WHERE id='".$_GET['delstep']."'";
 	$sqlh=mysql_query($sqlh) or die(mysql_error());
 
-	$sqli="DELETE FROM dmx_scenari WHERE step=$delstep";
+	$sqli="DELETE FROM dmx_scenari WHERE step='".$_GET['delstep']."'";
 	$sqli=mysql_query($sqli) or die(mysql_error());
 
     echo'<i>Step deleted</i>';
@@ -95,7 +95,7 @@ if ( isset($_POST['alldisabled']) )
 //pos
 if ( isset($_POST['chgallpos']) )
 {
-	$sqlg="UPDATE dmx_scenseq SET position=$allpos WHERE id_scenari=$id";
+	$sqlg="UPDATE dmx_scenseq SET position='".$_POST['allpos']."' WHERE id_scenari=$id";
 	$sqlg=mysql_query($sqlg) or die(mysql_error());
 }
 
@@ -121,10 +121,10 @@ echo'<div id="sequence"><table>';
 	{
 		//array values: nom du pas, hold, fade
 		for ($j = 0; $j < $testf; $j++) {
-			if ($hold[$j]==0 AND $fade[$j]==0){
+			if ($_POST['hold'][$j]==0 AND $_POST['fade'][$j]==0){
 				echo''.TXT_ZEROS_ERROR.'.';
-			}elseif ($hold[$j]!="" AND $fade[$j]!=""){
-				$sqlg="UPDATE dmx_scenseq SET stepname='".$stepname[$j]."',hold='".$hold[$j]."',fade='".$fade[$j]."',position='".$position[$j]."' WHERE id='".$step_id[$j]."'";
+			}elseif ($_POST['hold'][$j]!="" AND $_POST['fade'][$j]!=""){
+				$sqlg="UPDATE dmx_scenseq SET stepname='".$_POST['stepname'][$j]."',hold='".$_POST['hold'][$j]."',fade='".$_POST['fade'][$j]."',position='".$_POST['position'][$j]."' WHERE id='".$_POST['step_id'][$j]."'";
 				$sqlg=mysql_query($sqlg) or die(mysql_error());
 				//echo'ok_';
 			}
@@ -149,12 +149,12 @@ echo'<div id="sequence"><table>';
 	//chg all values
 	if ( isset($_POST['chgallval']) )
 	{
-		if ($allhold==0 AND $allfade==0){
+		if ($_POST['allhold']==0 AND $_POST['allfade']==0){
 			echo''.TXT_ZEROS_ERROR.'.';
-		}elseif ($allhold!="" AND $allfade!=""){
+		}elseif ($_POST['allhold']!="" AND $_POST['allfade']!=""){
 			//array values: hold, fade
 			for ($j = 0; $j < $testf; $j++) {
-				$sqlg="UPDATE dmx_scenseq SET hold='".$allhold."',fade='".$allfade."' WHERE id='".$step_id[$j]."'";
+				$sqlg="UPDATE dmx_scenseq SET hold='".$_POST['allhold']."',fade='".$_POST['allfade']."' WHERE id='".$_POST['step_id'][$j]."'";
 				$sqlg=mysql_query($sqlg) or die(mysql_error());
 				//echo'ok_';
 			}

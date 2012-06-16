@@ -286,12 +286,12 @@ if ( isset($_GET['dupstep']) )
 if ( isset($_GET['paintfrom']) )
 {
 	//regarde le scenseq for this step
-	$sqlb="SELECT * FROM dmx_scenseq WHERE id=$paintfrom";
+	$sqlb="SELECT * FROM dmx_scenseq WHERE id='".$_GET['paintfrom']."'";
 	$sqlb=mysql_query($sqlb);
 	while ($datab=mysql_fetch_array($sqlb)){
 
 		//regarde le step content rgb1
-		$sqle="SELECT * FROM dmx_scenari WHERE step=$paintfrom AND ch_name = 'rgb1'";
+		$sqle="SELECT * FROM dmx_scenari WHERE step='".$_GET['paintfrom']."' AND ch_name = 'rgb1'";
 		$sqle=mysql_query($sqle);
 		while ($datae=mysql_fetch_array($sqle)){
 			//get rgb1 value
@@ -299,7 +299,7 @@ if ( isset($_GET['paintfrom']) )
 		}
 
 		//$nb_rgb=8;
-		$sqle="SELECT * FROM dmx_scenari WHERE step=$paintfrom";
+		$sqle="SELECT * FROM dmx_scenari WHERE step='".$_GET['paintfrom']."'";
 		$sqle=mysql_query($sqle);
 		//$nb_rgb=mysql_num_rows($sqle);
 		$nb_rgb=0;
@@ -315,7 +315,7 @@ if ( isset($_GET['paintfrom']) )
 		}
 
 		//regarde le step content rgb2 (last)
-		$sqle="SELECT * FROM dmx_scenari WHERE step=$paintfrom AND ch_name = 'rgb$nb_rgb'";
+		$sqle="SELECT * FROM dmx_scenari WHERE step='".$_GET['paintfrom']."' AND ch_name = 'rgb$nb_rgb'";
 		$sqle=mysql_query($sqle);
 		while ($datae=mysql_fetch_array($sqle)){
 			//get rgb1 value
@@ -324,7 +324,7 @@ if ( isset($_GET['paintfrom']) )
 
 		//echo"rgb$nb_rgb -$myrgb1-$myrgb2-";
 
-		if ( !isset($rewind) ){
+		if ( !isset($_GET['rewind']) ){
 
 			// de haut en bas NORMAL
 			for ($i=2;$i<=$nb_rgb;$i++){		
@@ -337,7 +337,7 @@ if ( isset($_GET['paintfrom']) )
 				$last_step=mysql_insert_id();
 
 				//regarde le step content
-				$sqle="SELECT * FROM dmx_scenari WHERE step=$paintfrom ORDER BY id";
+				$sqle="SELECT * FROM dmx_scenari WHERE step='".$_GET['paintfrom']."' ORDER BY id";
 				$sqle=mysql_query($sqle);
 				$j=0;
 				while ($datae=mysql_fetch_array($sqle)){
@@ -348,7 +348,7 @@ if ( isset($_GET['paintfrom']) )
 
 						$j++; //echo"$j-";
 
-						if ( !isset($recover) ){
+						if ( !isset($_GET['recover']) ){
 
 							//DEFIL
 
@@ -399,7 +399,7 @@ if ( isset($_GET['paintfrom']) )
 				$last_step=mysql_insert_id();
 
 				//regarde le step content
-				$sqle="SELECT * FROM dmx_scenari WHERE step=$paintfrom ORDER BY id";
+				$sqle="SELECT * FROM dmx_scenari WHERE step='".$_GET['paintfrom']."' ORDER BY id";
 				$sqle=mysql_query($sqle);
 				$j=0;
 				while ($datae=mysql_fetch_array($sqle)){
@@ -410,7 +410,7 @@ if ( isset($_GET['paintfrom']) )
 
 						$j++; //echo"$j-";
 
-						if ( !isset($recover) ){
+						if ( !isset($_GET['recover']) ){
 
 							//DEFIL REW
 
@@ -905,7 +905,7 @@ echo'<table><tr>';
 echo'</tr></table>';
 
 //echo'<div class="carre" style="background-color:'.rgb2html(255,0,255).';"></div><br>';
-print_r($_POST);
+//print_r($_POST);
 
 ?>
 

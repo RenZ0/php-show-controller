@@ -77,7 +77,7 @@ if ( isset($_POST['alldisabled']) )
 //pos
 if ( isset($_POST['chgallpos']) )
 {
-	$sqlg="UPDATE dmx_colors SET position=$allpos";
+	$sqlg="UPDATE dmx_colors SET position='".$_POST['allpos']."'";
 	$sqlg=mysql_query($sqlg) or die(mysql_error());
 }
 
