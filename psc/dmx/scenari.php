@@ -25,9 +25,10 @@ session_start();
 require("../config.php");
 require("funct.php");
 include("menu.php");
-include("control.php");
 
 $id = $_GET['id'];
+
+include("control.php");
 
 //light
 if ( isset($_POST['unset_light']) )
@@ -204,17 +205,17 @@ if ( isset($_POST['superchg']) )
 		$newvalue=$_POST['newvaluetab'];
 	}
 
-	if ($likevalue!=""){
-		$sqlb="UPDATE dmx_scenari SET ch_value='$newvalue' WHERE step!=0 AND ch_name LIKE '%$likevalue%'";
-		if ($applytoall!="1"){
+	if ($_POST['likevalue']!=""){
+		$sqlb="UPDATE dmx_scenari SET ch_value='$newvalue' WHERE step!=0 AND ch_name LIKE '%".$_POST['likevalue']."%'";
+		if ($_POST['applytoall']!='1'){
 			//this scen only
 			$sqlb.=" AND id_scenari=$id";
 		}
 		$sqlb=mysql_query($sqlb) or die(mysql_error());
 	//
-	}elseif ($oldvalue!=""){
-		$sqlb="UPDATE dmx_scenari SET ch_value='$newvalue' WHERE step!=0 AND ch_value = '$oldvalue'";
-		if ($applytoall!="1"){
+	}elseif ($_POST['oldvalue']!=""){
+		$sqlb="UPDATE dmx_scenari SET ch_value='$newvalue' WHERE step!=0 AND ch_value = '".$_POST['oldvalue']."'";
+		if ($_POST['applytoall']!='1'){
 			//this scen only
 			$sqlb.=" AND id_scenari=$id";
 		}
