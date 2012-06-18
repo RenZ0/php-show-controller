@@ -9,5 +9,4 @@ Base
 *Make a program to import XML fixture files from QLC
 
 Code
-*Declare all variables to allow register_globals = Off
 *Use SQL classes which allow the database system choice

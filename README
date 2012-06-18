@@ -23,13 +23,18 @@ Installation
 First, you need to set up your webserver, for example on debian/ubuntu :
 sudo apt-get install apache2 mysql-server php5-mysql phpmyadmin python-mysqldb
 
-Configure php with register_globals = On :
-sudo gedit /etc/php5/apache2/php.ini
-sudo /etc/init.d/apache2 restart
-
 Create a new database, for example : psc
-(you can use phpmyadmin to do this).
+You can use phpmyadmin to do this, or mysql client :
+
+mysql -uroot -p
+create database psc;
+quit;
+
 Import the sql file psc_base.sql.gz into the new database.
+Again you can use phpmyadmin, or the command line :
+
+gzip -d psc_base.sql.gz
+mysql -uroot -p psc < psc_base.sql
 
 According to your webserver access, fill these files :
 engine/config.py
