@@ -156,6 +156,8 @@
 						$p++;
 					}
 					$nb_rgb=$p;
+				}else{
+					$nb_rgb=$_POST['nb_rgb'];
 				}
 
 				//echo"_$nb_rgb";
