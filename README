@@ -46,6 +46,18 @@ sudo cp -r psc/ /var/www/
 PSC is ready !
 
 
+About php
+---------
+
+Usually, you can keep php default settings :
+register_globals = Off
+short_open_tag = On
+
+Those commands could be usefull (debian/ubuntu) :
+sudo gedit /etc/php5/apache2/php.ini
+sudo /etc/init.d/apache2 restart
+
+
 Getting Started
 ---------------
 
