@@ -550,6 +550,10 @@ echo'<table><tr>';
 				echo'&nbsp;';
 			echo'</td></tr>';
 
+		echo'</table></div>';
+
+		echo'<div class="ctrlzone"><table>';
+
 				//colonnes vides pour la hauteur
 
 			echo'<tr><td colspan="2">';
@@ -709,7 +713,7 @@ echo'<table><tr>';
 					if ( !isset($_SESSION['light']) ){
 
 						echo'<td>';
-							echo'<input name="ch_value[]" value="'.$dataf[ch_value].'" size="8">';
+							echo'<input name="ch_value[]" value="'.$dataf[ch_value].'" size="9" style="width:90px;">';
 						echo'</td>';
 
 					}
@@ -771,12 +775,16 @@ echo'<table><tr>';
 					echo'&nbsp;';
 				echo'</td></tr>';
 
+			echo'</table></div>';
+
+			echo'<div class="ctrlzone"><table>';
+
 				//start
 				echo'<tr>';
 					echo'<td>';
 
 						//free
-						echo'<input name="allch_value" value="" size="8">';
+						echo'<input name="allch_value" value="" size="9" style="width:90px;">';
 
 					echo'</td>';
 					echo'<td colspan="2">';
@@ -796,7 +804,7 @@ echo'<table><tr>';
 							echo'<td>';
 
 								//jscolor
-								echo'<input name="allch_valuejs_rgb" value="0000ff" size="8" class="color {dmx_rgb:true}">';
+								echo'<input name="allch_valuejs_rgb" value="0000ff" size="9" style="width:90px;" class="color {dmx_rgb:true}">';
 
 							echo'</td>';
 							echo'<td colspan="2">';
@@ -814,7 +822,7 @@ echo'<table><tr>';
 							echo'<td>';
 
 								//jscolor reverse
-								echo'<input name="allch_valuejs_cmy" value="00ffff" size="8" class="color {dmx_cmy:true}">';
+								echo'<input name="allch_valuejs_cmy" value="00ffff" size="9" style="width:90px;" class="color {dmx_cmy:true}">';
 
 							echo'</td>';
 							echo'<td colspan="2">';

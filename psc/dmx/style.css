@@ -130,6 +130,10 @@ width:20px;
 height:20px;
 }
 
+.colorview table {
+margin-bottom:0px;
+}
+
 .colorview td {
 font-family:verdana, sans-serif;
 color:black;
@@ -165,5 +169,15 @@ margin-bottom:0px;
 border-width:0px 0px 0px 0px;
 padding:0px 4px 0px 4px;
 background-color:#CCCCCC;
+}
+
+.ctrlzone {
+height:300px;
+}
+
+.ctrlzone td {
+border-color:white;
+border-style:solid;
+border-width:0px;
 }
 
