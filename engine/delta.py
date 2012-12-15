@@ -134,8 +134,12 @@ class DmxSender(Thread):
             UniverseFrame = list(FramePart)
             print "FRAME_FOR_UNIV %s" % u
 #            print UniverseFrame
-            data = array.array('B', UniverseFrame)
-            self._wrapper.Client().SendDmx(u, data)
+            try:
+                data = array.array('B', UniverseFrame)
+                self._wrapper.Client().SendDmx(u, data)
+            except:
+                print "Dmx frame not sent. Reset all."
+                self.ResetAll()
             u += 1
 
     def StopDmxSender(self):
@@ -143,6 +147,9 @@ class DmxSender(Thread):
 
     def USplit(self, l, n):
         return zip(*(l[i::n] for i in range(n)))
+
+    def ResetAll(self):
+        self.my_scens={}
 
 class PlayScenari:
     def __init__(self, scenari, tickint):
