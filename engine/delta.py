@@ -97,9 +97,6 @@ class DmxSender(Thread):
             print "Schedule next"
             self._wrapper.AddEvent(self._tick_interval, self.SendDmxFrame)
 
-        else:
-            self._wrapper.Stop()
-
         #for each scenari in list
         for scenarid in self.scen_ids:
             try:
@@ -142,8 +139,19 @@ class DmxSender(Thread):
                 self.ResetAll()
             u += 1
 
-    def StopDmxSender(self):
-        self._activesender = False
+    def HaltDmxSender(self):
+        if self._activesender == True:
+            self._activesender = False
+            return True
+
+    def ResumeDmxSender(self):
+        if self._activesender == False:
+            self._activesender = True
+            self.SendDmxFrame()
+            return True
+
+    def CloseDmxSender(self):
+        self._wrapper.Stop()
 
     def USplit(self, l, n):
         return zip(*(l[i::n] for i in range(n)))

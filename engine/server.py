@@ -60,7 +60,15 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
             command=self.data
 
         if command=="halt":
-            DS.StopDmxSender()
+            if DS.HaltDmxSender():
+                status=1
+
+        if command=="resume":
+            if DS.ResumeDmxSender():
+                status=1
+
+        if command=="close":
+            DS.CloseDmxSender()
             status=1
 
         if command=="start":
