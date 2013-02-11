@@ -51,9 +51,13 @@ class DmxSender(Thread):
         self.base = com_sql.ComSql()
 
         # SQL Framerate
-        engine = self.base.requete_sql("SELECT * FROM dmx_engine WHERE id=1") #setting
-        for e in range(len(engine)):
-            freq_ms = engine[e]['freq_ms']
+        try:
+            engine = self.base.requete_sql("SELECT * FROM dmx_engine WHERE id=1") #setting
+            for e in range(len(engine)):
+                freq_ms = engine[e]['freq_ms']
+        except:
+            print "default to 40 fps"
+            freq_ms = 25
 
         # FOR TEST
 #        freq_ms = 500
@@ -70,9 +74,16 @@ class DmxSender(Thread):
         self.my_scens={}
 
         # SQL Universes
-        prefs = self.base.requete_sql("SELECT * FROM dmx_preferences WHERE id=1") #setting
-        for p in range(len(prefs)):
-            self.univ_qty = prefs[p]['univ_qty']
+        try:
+            prefs = self.base.requete_sql("SELECT * FROM dmx_preferences WHERE id=1") #setting
+            for p in range(len(prefs)):
+                self.univ_qty = prefs[p]['univ_qty']
+        except:
+            print "default to 1 universe"
+            self.univ_qty = 1
+
+        print "univ_qty"
+        print self.univ_qty
 
         # array to store full frame
         self.WholeDmxFrame = [0] * 512 * self.univ_qty
