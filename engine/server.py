@@ -59,6 +59,14 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         except:
             command=self.data
 
+        if command=="ulog":
+            if DS.ChangeUnivLogLevel():
+                status=1
+
+        if command=="log":
+            if DS.ChangeLogLevel(scenarid):
+                status=1
+
         if command=="halt":
             if DS.HaltDmxSender():
                 status=1

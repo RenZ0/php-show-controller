@@ -48,6 +48,7 @@ class DmxSender(Thread):
 
         self._wrapper = ClientWrapper()
         self._activesender = True
+        self.univloglevel = 0
         self.base = com_sql.ComSql()
 
         # SQL Framerate
@@ -105,7 +106,8 @@ class DmxSender(Thread):
 
         if self._activesender:
             # Schedule an event to run in the future
-            print "Schedule next"
+            if self.univloglevel > 0:
+                print "Schedule next"
             self._wrapper.AddEvent(self._tick_interval, self.SendDmxFrame)
 
         #for each scenari in list
@@ -122,8 +124,7 @@ class DmxSender(Thread):
                 # for each instance, compute frame
                 scen=self.my_scens[scenarid]
                 scen.ComputeNextFrame()
-                print "ComputeNextFrame"
-#                print "sending %s" % scen.new_frame
+#               print "calling %s" % scen.new_frame
 
                 # add partial frame to full one
                 self.AssignChannels(scen.patch, scen.new_frame)
@@ -140,8 +141,9 @@ class DmxSender(Thread):
         u=1
         for FramePart in SplittedFrame:
             UniverseFrame = list(FramePart)
-            print "FRAME_FOR_UNIV %s" % u
-#            print UniverseFrame
+            if self.univloglevel > 0:
+                print "FRAME_FOR_UNIV %s" % u
+#               print UniverseFrame
             try:
                 data = array.array('B', UniverseFrame)
                 self._wrapper.Client().SendDmx(u, data)
@@ -149,6 +151,26 @@ class DmxSender(Thread):
                 print "Dmx frame not sent. Reset all."
                 self.ResetAll()
             u += 1
+
+    def ChangeUnivLogLevel(self):
+        self.univloglevel+=1
+        if self.univloglevel > 1:
+            self.univloglevel=0
+            return False
+        else:
+            return True
+
+    def ChangeLogLevel(self, scenarid):
+        if self.my_scens.has_key(scenarid):
+            # set loglevel for this instance
+            scen=self.my_scens[scenarid]
+            print scen
+            scen.loglevel+=1
+            if scen.loglevel > 2:
+                scen.loglevel=0
+                return False
+            else:
+                return True
 
     def HaltDmxSender(self):
         if self._activesender == True:
@@ -170,12 +192,15 @@ class DmxSender(Thread):
     def ResetAll(self):
         self.my_scens={}
 
+###
+
 class PlayScenari:
     def __init__(self, scenari, tickint):
         '''Each instance if for only one scenari'''
 
         self.scenari = scenari
         self.tick_interval = tickint
+        self.loglevel = 0
         self._activescenari = True
         self.base = com_sql.ComSql()
         self.GetFixtureDetails()
@@ -212,7 +237,8 @@ class PlayScenari:
     def GetNextStep(self):
         '''Define the next step and compose frame'''
 
-        print "Define the next step for scenari %s" % self.scenari
+        if self.loglevel > 0:
+            print "Define the next step for scenari %s" % self.scenari
 
         # SQL Scen infos
         scendet = self.base.requete_sql("SELECT * FROM dmx_scensum WHERE id=%s", str(self.scenari)) #scen
@@ -224,7 +250,8 @@ class PlayScenari:
             else:
                 way="DESC"
 
-            print way
+            if self.loglevel > 0:
+                print way
 
         # SQL Sequence
         if self.reverse==0:
@@ -239,18 +266,21 @@ class PlayScenari:
 
             # each time we call this function, increase i to get the next step of sequence
             self.current_i += 1
-            print "current i in seq"
-            print self.current_i
+            if self.loglevel > 0:
+                print "current i in seq"
+                print self.current_i
 
             # reloop if needed
             if self.current_i >= len(self.sequence):
                 self.current_i = 0
-                print "reloop"
+                if self.loglevel > 0:
+                    print "reloop"
 
             # get stepid
-            print "nextplay"
             self.nextplay_stepid=self.sequence[self.current_i]['id']
-            print self.nextplay_stepid
+            if self.loglevel > 0:
+                print "nextplay"
+                print self.nextplay_stepid
 
             # compose frame for step
             self.nextplay=self.GetDmxFrame(self.nextplay_stepid)
@@ -293,11 +323,12 @@ class PlayScenari:
         if self.fade_ticks != 0:
 
             self._delta = [float(b - a) / self.fade_ticks for a, b in zip(self.playing, self.nextplay)]
-            print "delta"
-            print self._delta
+            if self.loglevel > 0:
+                print "delta"
+                print self._delta
 
-            print "Iter"
-            print self.fade_ticks
+                print "Iter"
+                print self.fade_ticks
 
         else:
             pass
@@ -329,7 +360,8 @@ class PlayScenari:
             alldmx+="."
         alldmx+=self.pafter
         alldmx=alldmx[:-1]
-        print alldmx
+        if self.loglevel > 0:
+            print alldmx
 
         dmxval = alldmx.split(".")
         dmxnum = []
@@ -346,7 +378,8 @@ class PlayScenari:
             # set channels to zero
             dmxnum = [0,] * len(dmxval)
 
-        print dmxnum
+        if self.loglevel > 0:
+            print dmxnum
 
         # return valid frame
         return dmxnum
@@ -354,13 +387,17 @@ class PlayScenari:
     def ComputeNextFrame(self):
         '''Return frame according to hold and fade'''
 
+        if self.loglevel > 1:
+            print "ComputeNextFrame"
+
         if self._activescenari:
             # play hold first
             if self.hold_counter != 0:
 
                 self.hold_counter -= 1
-                print "hold counter"
-                print self.hold_counter
+                if self.loglevel > 1:
+                    print "hold counter"
+                    print self.hold_counter
 
                 # playing frame
                 self.new_frame = [int(round(x)) for x in self._frame]
@@ -372,8 +409,9 @@ class PlayScenari:
             if self.hold_counter == 0 and self.fade_counter != 0:
 
                 self.fade_counter -= 1
-                print "fade counter"
-                print self.fade_counter
+                if self.loglevel > 1:
+                    print "fade counter"
+                    print self.fade_counter
 
                 # compute fade frame
                 self._frame = map(sum, zip(self._frame, self._delta))
@@ -384,7 +422,8 @@ class PlayScenari:
 
             # if all completed, call the next step
             if self.hold_counter == 0 and self.fade_counter == 0:
-                print "NEXT STEP"
+                if self.loglevel > 0:
+                    print "NEXT STEP"
                 self.ChangeStep()
 
         else:
