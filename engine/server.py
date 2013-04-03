@@ -80,27 +80,20 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
             status=1
 
         if command=="start":
-            if not scenarid in DS.scen_ids:
-                # add id into list
-                DS.scen_ids.append(scenarid)
+            if DS.StartScenari(scenarid):
                 status=1
 
         if command=="stop":
-            if scenarid in DS.scen_ids:
-                # remove id from list
-                DS.scen_ids.remove(scenarid)
-                status=1
-
-        if command=="reset":
-            if DS.my_scens.has_key(scenarid):
-                # remove instance for this id
-                DS.my_scens.pop(scenarid)
+            if DS.StopScenari(scenarid):
                 status=1
 
         if command=="status":
-            if scenarid in DS.scen_ids:
-                # tell if running
-                data="%s running" % scenarid
+            if DS.StatusScenari(scenarid):
+                status=1
+
+        if command=="reset":
+            if DS.ResetScenari(scenarid):
+                status=1
 
         if command=="list":
             try:
@@ -110,12 +103,12 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
                 pass
 
         if command=="stopall":
-            DS.scen_ids=[]
+            DS.StopAll()
             status=1
 
         if command=="bo":
             # stopall
-            DS.scen_ids=[]
+            DS.StopAll()
             # bo
             DS.BlackOut()
             status=1

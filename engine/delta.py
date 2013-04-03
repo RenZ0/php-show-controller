@@ -186,11 +186,36 @@ class DmxSender(Thread):
     def CloseDmxSender(self):
         self._wrapper.Stop()
 
-    def USplit(self, l, n):
-        return zip(*(l[i::n] for i in range(n)))
+    def StartScenari(self, scenarid):
+        if not scenarid in self.scen_ids:
+            # add id into list
+            self.scen_ids.append(scenarid)
+            return True
+
+    def StopScenari(self, scenarid):
+        if scenarid in self.scen_ids:
+            # remove id into list
+            self.scen_ids.remove(scenarid)
+            return True
+
+    def StatusScenari(self, scenarid):
+        if scenarid in self.scen_ids:
+            return True
+
+    def ResetScenari(self, scenarid):
+        if self.my_scens.has_key(scenarid):
+            # remove instance for this id
+            self.my_scens.pop(scenarid)
+            return True
+
+    def StopAll(self):
+        self.scen_ids=[]
 
     def ResetAll(self):
         self.my_scens={}
+
+    def USplit(self, l, n):
+        return zip(*(l[i::n] for i in range(n)))
 
 ###
 
