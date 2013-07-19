@@ -70,6 +70,13 @@ if ($list=='all'){
 		echo'<td><input type="submit" name="go" value="bo"></td>';
 		echo'</form>';
 
+		echo'<td width="10"></td>';
+
+		echo'<form action="panel.php?list=all&multi='.$multi.'" method="post" style="margin-top: 0px; margin-bottom: 0px">';
+		echo'<input type="hidden" name="act" value="resetall">';
+		echo'<td><input type="submit" name="go" value="resetall"></td>';
+		echo'</form>';
+
 	echo'</tr></table>';
 
 	echo'<hr>';
