@@ -106,6 +106,10 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
             DS.StopAll()
             status=1
 
+        if command=="resetall":
+            DS.ResetAll()
+            status=1
+
         if command=="bo":
             # stopall
             DS.StopAll()
