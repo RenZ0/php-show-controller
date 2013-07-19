@@ -59,6 +59,11 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         except:
             command=self.data
 
+            # advise when scenarid needed
+            if command=="start" or command=="stop" or command=="status" or command=="reset" or command=="log":
+                scenarid=0
+                data="Specify scenari iD"
+
         if command=="ulog":
             if DS.ChangeUnivLogLevel():
                 status=1
@@ -79,7 +84,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
             DS.CloseDmxSender()
             status=1
 
-        if command=="start":
+        if command=="start" and scenarid!=0:
             if DS.StartScenari(scenarid):
                 status=1
 
