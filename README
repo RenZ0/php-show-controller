@@ -132,9 +132,46 @@ Control can be done with python too :
 python test.py start.1 (where 1 is scenario's id)
 python test.py stop.1
 python test.py status.1
+
 python test.py list
 python test.py stopall
 python test.py bo
+python test.py resetall
+
+
+Logging features
+----------------
+
+You can choose some logging levels to see server activity
+(display is done in your server.py terminal).
+
+---
+Logging can be enabled for each scenario :
+
+python test.py log.6 (where 6 is scenario's id)
+
+The first time, you see step values.
+Use the command a second time to see frame counter.
+Use it again to disable logging.
+
+---
+Universe frame logging can be toggled with :
+
+python test.py ulog
+
+
+Frame server
+------------
+
+You can also pause the frame server :
+
+python test.py halt
+python test.py resume
+
+---
+To finish the server task properly :
+
+python test.py close
 
 
 Troubleshooting
