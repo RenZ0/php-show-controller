@@ -132,6 +132,7 @@ Control can be done with python too :
 python test.py start.1 (where 1 is scenario's id)
 python test.py stop.1
 python test.py status.1
+python test.py reset.1
 
 python test.py list
 python test.py stopall

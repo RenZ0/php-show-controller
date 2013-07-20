@@ -77,6 +77,23 @@ if ($list=='all'){
 		echo'<td><input type="submit" name="go" value="resetall"></td>';
 		echo'</form>';
 
+		echo'<td width="10"></td>';
+
+		echo'<form action="panel.php?list=all&multi='.$multi.'" method="post" style="margin-top: 0px; margin-bottom: 0px">';
+		echo'<input type="hidden" name="act" value="ulog">';
+		echo'<td><input type="submit" name="go" value="ulog"></td>';
+		echo'</form>';
+
+		echo'<form action="panel.php?list=all&multi='.$multi.'" method="post" style="margin-top: 0px; margin-bottom: 0px">';
+		echo'<input type="hidden" name="act" value="halt">';
+		echo'<td><input type="submit" name="go" value="halt"></td>';
+		echo'</form>';
+
+		echo'<form action="panel.php?list=all&multi='.$multi.'" method="post" style="margin-top: 0px; margin-bottom: 0px">';
+		echo'<input type="hidden" name="act" value="resume">';
+		echo'<td><input type="submit" name="go" value="resume"></td>';
+		echo'</form>';
+
 	echo'</tr></table>';
 
 	echo'<hr>';
@@ -125,6 +142,13 @@ if ($list=='all'){
 
 			echo'<td width="">(id'.$datab[id].') <a href="scenari.php?id='.$datab[id].'"><b>'.$datab[scenari_name].'</b></a></td>';
 
+			if ($multi==0){
+				echo'<form action="panel.php?list=all&multi='.$multi.'" method="post" style="margin-top: 0px; margin-bottom: 0px">';
+				echo'<input type="hidden" name="act" value="log.'.$datab[id].'">';
+				echo'<td><input type="submit" name="go" value="log"></td>';
+				echo'</form>';
+			}
+
 			echo'</tr>';
 		}
 
@@ -138,12 +162,15 @@ if ($list=='all'){
 			//
 			echo'<input type="submit" name="act" value="stop"><br>';
 			//
-			echo'<input type="submit" name="act" value="reset">';
+			echo'<input type="submit" name="act" value="reset"><br>';
 			//
-			echo'</form>';
+			echo'<input type="submit" name="act" value="log">';
+			//
 		}else{
 			echo'Nothing yet !<br><br>';
 		}
+		//
+		echo'</form>';
 	}
 
 	echo'<hr>';
