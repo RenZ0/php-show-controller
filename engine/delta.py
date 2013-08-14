@@ -110,6 +110,28 @@ class DmxSender(Thread):
                 print "Schedule next"
             self._wrapper.AddEvent(self._tick_interval, self.SendDmxFrame)
 
+        print "before sending   %s" % time.time()
+
+        # send data to universes
+#        print "SPLIT"
+        SplittedFrame = self.USplit(self.WholeDmxFrame,512)
+
+        u=1
+        for FramePart in SplittedFrame:
+            UniverseFrame = list(FramePart)
+            if self.univloglevel > 0:
+                print "FRAME_FOR_UNIV %s" % u
+#               print UniverseFrame
+            try:
+                data = array.array('B', UniverseFrame)
+                self._wrapper.Client().SendDmx(u, data)
+            except:
+                print "Dmx frame not sent. Reset all."
+                self.ResetAll()
+            u += 1
+
+        print "before computing %s" % time.time()
+
         #for each scenari in list
         for scenarid in self.scen_ids:
             try:
@@ -134,23 +156,8 @@ class DmxSender(Thread):
             except:
                 print "NOT STARTED"
 
-        # send data to universes
-#        print "SPLIT"
-        SplittedFrame = self.USplit(self.WholeDmxFrame,512)
-
-        u=1
-        for FramePart in SplittedFrame:
-            UniverseFrame = list(FramePart)
-            if self.univloglevel > 0:
-                print "FRAME_FOR_UNIV %s" % u
-#               print UniverseFrame
-            try:
-                data = array.array('B', UniverseFrame)
-                self._wrapper.Client().SendDmx(u, data)
-            except:
-                print "Dmx frame not sent. Reset all."
-                self.ResetAll()
-            u += 1
+        print "after computing  %s" % time.time()
+        print "---"
 
     def ChangeUnivLogLevel(self):
         self.univloglevel+=1
