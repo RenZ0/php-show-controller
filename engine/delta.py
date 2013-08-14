@@ -110,7 +110,8 @@ class DmxSender(Thread):
                 print "Schedule next"
             self._wrapper.AddEvent(self._tick_interval, self.SendDmxFrame)
 
-        print "before sending   %s" % time.time()
+        if self.univloglevel > 1:
+            print "before sending   %s" % time.time()
 
         # send data to universes
 #        print "SPLIT"
@@ -130,7 +131,8 @@ class DmxSender(Thread):
                 self.ResetAll()
             u += 1
 
-        print "before computing %s" % time.time()
+        if self.univloglevel > 1:
+            print "before computing %s" % time.time()
 
         #for each scenari in list
         for scenarid in self.scen_ids:
@@ -156,12 +158,13 @@ class DmxSender(Thread):
             except:
                 print "NOT STARTED"
 
-        print "after computing  %s" % time.time()
-        print "---"
+        if self.univloglevel > 1:
+            print "after computing  %s" % time.time()
+            print "---"
 
     def ChangeUnivLogLevel(self):
         self.univloglevel+=1
-        if self.univloglevel > 1:
+        if self.univloglevel > 2:
             self.univloglevel=0
             return False
         else:
