@@ -423,7 +423,7 @@ class PlayScenari:
         '''Return frame according to hold and fade'''
 
         if self.loglevel > 1:
-            print "ComputeNextFrame"
+            print "ComputeNextFrame.scen.%s" % self.scenari
 
         if self._activescenari:
             # play hold first
