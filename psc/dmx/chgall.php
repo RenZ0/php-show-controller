@@ -80,7 +80,10 @@
 				}
 
 			//sinon toutes les rgb when no filter
-			}elseif ( (isset($_POST['chgallval'])) AND (!isset($_POST['colorstab'])) AND $new_allch_value!="" AND (!isset($_SESSION['filter_exp'])) ){
+			}elseif ( (isset($_POST['chgallval'])) AND (!isset($_POST['colorstab'])) AND $new_allch_value!="" 
+
+								AND (!isset($_SESSION['filter_exp_a'])) AND (!isset($_SESSION['filter_exp_b'])) ){
+
 				//array values
 				for ($j = 0; $j < $testf; $j++) {
 					$match=substr($_POST['ch_name'][$j], 0, 3);

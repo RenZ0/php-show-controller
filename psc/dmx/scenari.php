@@ -45,13 +45,19 @@ if ( isset($_POST['set_light']) )
 //session filter
 if ( isset($_POST['unset_filter']) )
 {
-	unset($_SESSION['filter_exp']);
+	unset($_SESSION['filter_exp_a']);
+	unset($_SESSION['filter_exp_b']);
 }
 
-if ( isset($_POST['set_filter']) AND $_POST['filter_exp']!="" )
+if ( isset($_POST['set_filter']) )
 {
-	$_SESSION['filter_exp'] = $_POST['filter_exp'];
-	//echo"OK";
+	if ( $_POST['filter_exp_a']!="" ){
+		$_SESSION['filter_exp_a'] = $_POST['filter_exp_a'];
+	}
+
+	if ( $_POST['filter_exp_b']!="" ){
+		$_SESSION['filter_exp_b'] = $_POST['filter_exp_b'];
+	}
 }
 
 //dhold dfade
@@ -124,13 +130,22 @@ echo'<div class="sideborder"><table><tr>
 
 			<form action="scenari.php?id=<?echo$id?>" method="post">
 				<b><?=TXT_FILTER?></b>:
-				<input type="text" name="filter_exp" size="12">
+				<input type="text" name="filter_exp_a" size="6">
+				<input type="text" name="filter_exp_b" size="6">
 				<input type="submit" name="set_filter" value="<?=TXT_SET?>">
 				<input type="submit" name="unset_filter" value="<?=TXT_UNSET?>">
 				<?
-				if ( isset($_SESSION['filter_exp']) )
+				if ( isset($_SESSION['filter_exp_a']) OR isset($_SESSION['filter_exp_b']) )
 				{
-					echo'<font color="red"><b>ACTIF</b></font> : '.$_SESSION['filter_exp'].'';
+					echo'<font color="red"><b>OK</b></font> : ';
+
+					if ( isset($_SESSION['filter_exp_a']) ){
+						echo''.$_SESSION['filter_exp_a'].'';
+					}
+
+					if ( isset($_SESSION['filter_exp_b']) ){
+						echo' # '.$_SESSION['filter_exp_b'].'';
+					}
 				}
 				?>
 			</form>
@@ -501,16 +516,18 @@ echo'<table><tr>';
 		echo'<div class="colorview"><table>';
 
 			//request again for refresh
-			if ( isset($_SESSION['filter_exp']) )
-			{
-			$sqlf="SELECT * FROM dmx_scenari WHERE id_scenari=$id AND step=0 AND ch_name LIKE '%$_SESSION[filter_exp]%' ORDER BY id";
-			//
-			//$sqlf="SELECT * FROM dmx_scenari INNER JOIN dmx_schema ON dmx_scenari.ch_value=dmx_schema.id WHERE dmx_scenari.id_scenari=$id AND dmx_scenari.step=0 AND dmx_schema.ch_name LIKE '%$_SESSION[filter_exp]%' ORDER BY dmx_scenari.id";
+			$sqlf="SELECT * FROM dmx_scenari WHERE id_scenari=$id AND step=0";
+
+			if ( isset($_SESSION['filter_exp_a']) ){
+				$sqlf.=" AND ch_name LIKE '%$_SESSION[filter_exp_a]%'";
 			}
-			else
-			{
-			$sqlf="SELECT * FROM dmx_scenari WHERE id_scenari=$id AND step=0 ORDER BY id";
+
+			if ( isset($_SESSION['filter_exp_b']) ){
+				$sqlf.=" AND ch_name LIKE '%$_SESSION[filter_exp_b]%'";
 			}
+
+			$sqlf.=" ORDER BY id";
+
 			$sqlf=mysql_query($sqlf);
 			$testf=mysql_num_rows($sqlf);
 			while ($dataf=mysql_fetch_array($sqlf)){
@@ -697,14 +714,18 @@ echo'<table><tr>';
 		echo'<div class="colorview"><table>';
 
 			//request again for refresh
-			if ( isset($_SESSION['filter_exp']) )
-			{
-			$sqlf="SELECT * FROM dmx_scenari WHERE id_scenari=$id AND step=$datae[id] AND ch_name LIKE '%$_SESSION[filter_exp]%' ORDER BY id";
+			$sqlf="SELECT * FROM dmx_scenari WHERE id_scenari=$id AND step=$datae[id]";
+
+			if ( isset($_SESSION['filter_exp_a']) ){
+				$sqlf.=" AND ch_name LIKE '%$_SESSION[filter_exp_a]%'";
 			}
-			else
-			{
-			$sqlf="SELECT * FROM dmx_scenari WHERE id_scenari=$id AND step=$datae[id] ORDER BY id";
+
+			if ( isset($_SESSION['filter_exp_b']) ){
+				$sqlf.=" AND ch_name LIKE '%$_SESSION[filter_exp_b]%'";
 			}
+
+			$sqlf.=" ORDER BY id";
+
 			$sqlf=mysql_query($sqlf);
 			$nb_rgb=0;
 			while ($dataf=mysql_fetch_array($sqlf)){
