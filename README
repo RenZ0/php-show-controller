@@ -160,6 +160,10 @@ Universe frame logging can be toggled with :
 
 python test.py ulog
 
+The first time, you see frame sending.
+Use the command a second time to see timestamps.
+Use it again to disable logging.
+
 
 Frame server
 ------------

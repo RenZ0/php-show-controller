@@ -1,3 +1,9 @@
+16/08/2013 php-show-controller 1.1.5
+
+ * Add a second filter to scenario editor
+ * Improve engine accuracy
+ * Improve logging features
+
 20/07/2013 php-show-controller 1.1.4
 
  * Add logging features
