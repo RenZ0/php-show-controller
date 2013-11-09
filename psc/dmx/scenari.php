@@ -654,11 +654,13 @@ echo'<table><tr>';
 
 		//dis link
 		echo'&nbsp;<a href="scenari.php?id='.$id.'&distep='.$datae[id].'"';
+		echo' onmousemove="over(\''.TXT_DISABLE.'\', event)" onmouseout="overstop()"';
 		echo" onclick=\"javascript:if(!confirm('DISABLE STEP ?')) return false;\"";
 		echo'>X</a>';
 
 		//dup link
 		echo'&nbsp;<a href="scenari.php?id='.$id.'&dupstep='.$datae[id].'"';
+		echo' onmousemove="over(\''.TXT_DUPLICATE.'\', event)" onmouseout="overstop()"';
 		//echo" onclick=\"javascript:if(!confirm('DUPLICATE STEP ?')) return false;\"";
 		echo'>#</a>';
 
@@ -669,19 +671,23 @@ echo'<table><tr>';
 
 			//paint link
 			echo'<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'"';
+			echo' onmousemove="over(\''.TXT_COLOR_MOVE.'\', event)" onmouseout="overstop()"';
 			//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
 			echo'>D</a>';
 			//paint link
 			echo'<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'&rewind=1"';
+			echo' onmousemove="over(\''.TXT_COLOR_MOVE_REWIND.'\', event)" onmouseout="overstop()"';
 			//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
 			echo'>w</a>';
 
 			//paint link recover
 			echo'-<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'&recover=1"';
+			echo' onmousemove="over(\''.TXT_COLOR_RECOVER.'\', event)" onmouseout="overstop()"';
 			//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
 			echo'>R</a>';
 			//paint link recover
 			echo'<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'&recover=1&rewind=1"';
+			echo' onmousemove="over(\''.TXT_COLOR_RECOVER_REWIND.'\', event)" onmouseout="overstop()"';
 			//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
 			echo'>w</a>';
 

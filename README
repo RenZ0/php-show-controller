@@ -118,7 +118,7 @@ You can disable, duplicate a step with X or # symbol.
 
 D,w and R,w letters are used to generate many steps from original step :
 D : first rgb color moves over rgb channels, going to last one.
-R : first rgb color recover rgb channels, until all changed.
+R : first rgb color recovers rgb channels, until all changed.
 w is the same but rewind, it uses the last color instead of first one.
 (these features only work with channels named like rgb1 to rgbX)
 

@@ -166,6 +166,11 @@ define('TXT_FADE_F','F');
 define('TXT_HOLD_H_MIN','p');
 define('TXT_FADE_F_MIN','f');
 
+define('TXT_COLOR_MOVE','Déplace la couleur rgb1 sur tous les canaux rgb');
+define('TXT_COLOR_MOVE_REWIND','Déplace la dernière couleur rgb sur tous les canaux rgb');
+define('TXT_COLOR_RECOVER','Recouvre les canaux rgb avec la couleur rgb1');
+define('TXT_COLOR_RECOVER_REWIND','Recouvre les canaux rgb avec la dernière couleur rgb');
+
 //---------------------------------------------------------
 // play.php
 //---------------------------------------------------------

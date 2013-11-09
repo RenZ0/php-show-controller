@@ -166,6 +166,11 @@ define('TXT_FADE_F','F');
 define('TXT_HOLD_H_MIN','h');
 define('TXT_FADE_F_MIN','f');
 
+define('TXT_COLOR_MOVE','Move rgb1 color over rgb channels');
+define('TXT_COLOR_MOVE_REWIND','Move last rgb color over rgb channels');
+define('TXT_COLOR_RECOVER','Recover rgb channels with rgb1 color');
+define('TXT_COLOR_RECOVER_REWIND','Recover rgb channels with last rgb color');
+
 //---------------------------------------------------------
 // play.php
 //---------------------------------------------------------
