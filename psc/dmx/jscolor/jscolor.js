@@ -97,8 +97,8 @@ var jscolor = {
 
 
 	images : {
-		pad : [ 181, 101 ],
-		sld : [ 16, 101 ],
+		pad : [ 251, 140 ],
+		sld : [ 16, 140 ],
 		cross : [ 15, 15 ],
 		arrow : [ 7, 11 ]
 	},
