@@ -477,6 +477,14 @@ if ( isset($_GET['distep']) )
 	$sqlb=mysql_query($sqlb);
 }
 
+//edit step
+if ( isset($_POST['chgstep']) )
+{
+	//update step of scenseq
+	$sqlb="UPDATE dmx_scenseq SET stepname='".$_POST['step_name']."',hold='".$_POST['step_hold']."',fade='".$_POST['step_fade']."',position='".$_POST['step_position']."' WHERE id='".$_POST['step_id']."'";
+	$sqlb=mysql_query($sqlb);
+}
+
 //step list
 
 //affiche toutes les steps
@@ -510,6 +518,12 @@ echo'<table><tr>';
 	echo'<b>'.TXT_CHANNELS.'</b><br>';
 
 	echo'<font color="#808080">DMX<div style="float:right;">Info</div></font>';
+
+	echo'<br><br>';
+
+	if ( isset($_GET['editstep']) ){
+		echo'<br>';
+	}
 
 	if ( !isset($_SESSION['light']) ){
 
@@ -633,7 +647,15 @@ echo'<table><tr>';
 	//for ($i = 1; $i <= $teste; $i++) {
     $i=1;
     // get steps info
-    $sqle="SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=$id ORDER BY position $way,id $way";
+    $sqle="SELECT * FROM dmx_scenseq WHERE disabled!=1 AND id_scenari=$id";
+
+    if ( isset($_GET['editstep']) )
+    {
+        $sqle .= " AND id=$_GET[editstep]";
+    }
+
+    $sqle .= " ORDER BY position $way,id $way";
+
     $sqle=mysql_query($sqle);
     $teste=mysql_num_rows($sqle);
 	while ($datae=mysql_fetch_array($sqle)){
@@ -643,59 +665,88 @@ echo'<table><tr>';
 		//colonne du tableau global
 		echo'<td>';
 
-		if ( !isset($_SESSION['light']) ){
+		if ( isset($_GET['editstep']) )
+		{
 
-			//step infos
-			echo'<b>S'.$i.'</b>&nbsp;'; // $datae[step] error need i
+			echo''.TXT_HOLD_H.'<input name="step_hold" value="'.$datae[hold].'" size="1" style="width:35px;">&nbsp;';
+			echo''.TXT_FADE_F.'<input name="step_fade" value="'.$datae[fade].'" size="1" style="width:35px;">&nbsp;';
+			echo''.TXT_POSITION_POS.'<input name="step_position" value="'.$datae[position].'" size="1" style="width:35px;">';
+			echo'<br>';
+			echo'<input name="step_name" value="'.$datae[stepname].'" size="9" style="width:110px;">';
+			echo'<input type="hidden" name="step_id" value="'.$datae[id].'">';
+			echo'<input type="submit" name="chgstep" value="OK">';
 
-			echo'('.TXT_HOLD_H_MIN.''.$datae[hold].'-'.TXT_FADE_F_MIN.''.$datae[fade].')';
+		}else{
+
+			if ( !isset($_SESSION['light']) ){
+
+				//step infos
+				echo'<b>S'.$i.'</b>&nbsp;'; // $datae[step] error need i
+
+				echo'('.TXT_HOLD_H_MIN.''.$datae[hold].'-'.TXT_FADE_F_MIN.''.$datae[fade].')';
+
+			}
+
+			echo'<div style="float:right;">';
+
+				//edit link
+				echo'<a href="scenari.php?id='.$id.'&editstep='.$datae[id].'"';
+				echo' onmousemove="over(\''.TXT_EDIT.'\', event)" onmouseout="overstop()"';
+				//echo" onclick=\"javascript:if(!confirm('EDIT STEP ?')) return false;\"";
+				echo'>E</a>';
+				echo'&nbsp;&nbsp;';
+
+				//dis link
+				echo'<a href="scenari.php?id='.$id.'&distep='.$datae[id].'"';
+				echo' onmousemove="over(\''.TXT_DISABLE.'\', event)" onmouseout="overstop()"';
+				echo" onclick=\"javascript:if(!confirm('DISABLE STEP ?')) return false;\"";
+				echo'>X</a>';
+				echo'&nbsp;';
+
+				//dup link
+				echo'<a href="scenari.php?id='.$id.'&dupstep='.$datae[id].'"';
+				echo' onmousemove="over(\''.TXT_DUPLICATE.'\', event)" onmouseout="overstop()"';
+				//echo" onclick=\"javascript:if(!confirm('DUPLICATE STEP ?')) return false;\"";
+				echo'>#</a>';
+
+			echo'</div><br>';
+
+			if ( !isset($_SESSION['light']) ){
+				//name
+				echo'<font size="1"><b>'.$datae[stepname].'</b></font>&nbsp;';
+			}
+
+			echo'<div style="float:right;">';
+
+				//paint link
+				echo'<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'"';
+				echo' onmousemove="over(\''.TXT_COLOR_MOVE.'\', event)" onmouseout="overstop()"';
+				//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
+				echo'>D</a>';
+				//paint link
+				echo'<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'&rewind=1"';
+				echo' onmousemove="over(\''.TXT_COLOR_MOVE_REWIND.'\', event)" onmouseout="overstop()"';
+				//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
+				echo'>w</a>';
+
+				//paint link recover
+				echo'-<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'&recover=1"';
+				echo' onmousemove="over(\''.TXT_COLOR_RECOVER.'\', event)" onmouseout="overstop()"';
+				//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
+				echo'>R</a>';
+				//paint link recover
+				echo'<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'&recover=1&rewind=1"';
+				echo' onmousemove="over(\''.TXT_COLOR_RECOVER_REWIND.'\', event)" onmouseout="overstop()"';
+				//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
+				echo'>w</a>';
+
+			echo'</div>';
 
 		}
 
-		//dis link
-		echo'&nbsp;<a href="scenari.php?id='.$id.'&distep='.$datae[id].'"';
-		echo' onmousemove="over(\''.TXT_DISABLE.'\', event)" onmouseout="overstop()"';
-		echo" onclick=\"javascript:if(!confirm('DISABLE STEP ?')) return false;\"";
-		echo'>X</a>';
-
-		//dup link
-		echo'&nbsp;<a href="scenari.php?id='.$id.'&dupstep='.$datae[id].'"';
-		echo' onmousemove="over(\''.TXT_DUPLICATE.'\', event)" onmouseout="overstop()"';
-		//echo" onclick=\"javascript:if(!confirm('DUPLICATE STEP ?')) return false;\"";
-		echo'>#</a>';
-
-		//name
-		echo'<br><font size="1"><b>'.$datae[stepname].'</b></font>&nbsp;';
-
-		echo'<div style="float:right;">';
-
-			//paint link
-			echo'<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'"';
-			echo' onmousemove="over(\''.TXT_COLOR_MOVE.'\', event)" onmouseout="overstop()"';
-			//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
-			echo'>D</a>';
-			//paint link
-			echo'<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'&rewind=1"';
-			echo' onmousemove="over(\''.TXT_COLOR_MOVE_REWIND.'\', event)" onmouseout="overstop()"';
-			//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
-			echo'>w</a>';
-
-			//paint link recover
-			echo'-<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'&recover=1"';
-			echo' onmousemove="over(\''.TXT_COLOR_RECOVER.'\', event)" onmouseout="overstop()"';
-			//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
-			echo'>R</a>';
-			//paint link recover
-			echo'<a href="scenari.php?id='.$id.'&paintfrom='.$datae[id].'&recover=1&rewind=1"';
-			echo' onmousemove="over(\''.TXT_COLOR_RECOVER_REWIND.'\', event)" onmouseout="overstop()"';
-			//echo" onclick=\"javascript:if(!confirm('PAINT STEP ?')) return false;\"";
-			echo'>w</a>';
-
-		echo'</div>';
-
-		if ( isset($_SESSION['light']) ){
+		//if ( isset($_SESSION['light']) ){
 			echo'<br><br>';
-		}
+		//}
 
 		$sqlf="SELECT * FROM dmx_scenari WHERE id_scenari=$id AND step=$datae[id]";
 		$sqlf=mysql_query($sqlf);

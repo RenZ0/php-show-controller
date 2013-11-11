@@ -165,6 +165,7 @@ define('TXT_HOLD_H','H');
 define('TXT_FADE_F','F');
 define('TXT_HOLD_H_MIN','h');
 define('TXT_FADE_F_MIN','f');
+define('TXT_POSITION_POS','Pos');
 
 define('TXT_COLOR_MOVE','Move rgb1 color over rgb channels');
 define('TXT_COLOR_MOVE_REWIND','Move last rgb color over rgb channels');

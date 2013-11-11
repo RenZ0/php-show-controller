@@ -108,13 +108,15 @@ On the right of channel name, the o letter will display dmx info
 
 Color changes, included random and gradient are made on 'rgb'
 channels by default.
-Save the colors or values you want into the bank (Colors page).
+Save the colors or values you want into the bank (Colors page),
+click on a color square to do it easily.
 
 Use the checkboxes to make partial changes.
 Try the filter to show channels you want, and make fast changes
 (with filter, 'ALL' button applies value on every channel seen).
 
-You can disable, duplicate a step with X or # symbol.
+On top of columns, click E to edit one step at a time.
+You can disable or duplicate a step with X or # symbols.
 
 D,w and R,w letters are used to generate many steps from original step :
 D : first rgb color moves over rgb channels, going to last one.
