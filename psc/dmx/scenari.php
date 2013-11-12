@@ -673,7 +673,7 @@ echo'<table><tr>';
 			echo''.TXT_POSITION_POS.'<input name="step_position" value="'.$datae[position].'" size="1" style="width:35px;">';
 			echo'<br>';
 			echo'<input name="step_name" value="'.$datae[stepname].'" size="9" style="width:110px;">';
-			echo'<input type="hidden" name="step_id" value="'.$datae[id].'">';
+			//echo'<input type="hidden" name="step_id" value="'.$datae[id].'">'; //now at bottom
 			echo'<input type="submit" name="chgstep" value="OK">';
 
 		}else{
@@ -744,9 +744,7 @@ echo'<table><tr>';
 
 		}
 
-		//if ( isset($_SESSION['light']) ){
-			echo'<br><br>';
-		//}
+		echo'<br><br>';
 
 		$sqlf="SELECT * FROM dmx_scenari WHERE id_scenari=$id AND step=$datae[id]";
 		$sqlf=mysql_query($sqlf);
@@ -881,8 +879,16 @@ echo'<table><tr>';
 						echo'<tr>';
 							echo'<td>';
 
+								if ( isset($_POST['chgallvaljs_rgb']) AND $_POST['step_id']==$datae['id'] )
+								{
+									$array_color=explode('.',$_POST['allch_valuejs_rgb']);
+									$valjs_color_rgb=rgb2html($array_color[0],$array_color[1],$array_color[2]);
+								}else{
+									$valjs_color_rgb='0000ff';
+								}
+
 								//jscolor
-								echo'<input name="allch_valuejs_rgb" value="0000ff" size="9" style="width:90px;" class="color {dmx_rgb:true}">';
+								echo'<input name="allch_valuejs_rgb" value="'.$valjs_color_rgb.'" size="9" style="width:90px;" class="color {dmx_rgb:true}">';
 
 							echo'</td>';
 							echo'<td colspan="2">';
@@ -899,8 +905,16 @@ echo'<table><tr>';
 						echo'<tr>';
 							echo'<td>';
 
+								if ( isset($_POST['chgallvaljs_cmy']) AND $_POST['step_id']==$datae['id'] )
+								{
+									$array_color=explode('.',$_POST['allch_valuejs_cmy']);
+									$valjs_color_cmy=cmy2html($array_color[0],$array_color[1],$array_color[2]);
+								}else{
+									$valjs_color_cmy='00ffff';
+								}
+
 								//jscolor reverse
-								echo'<input name="allch_valuejs_cmy" value="00ffff" size="9" style="width:90px;" class="color {dmx_cmy:true}">';
+								echo'<input name="allch_valuejs_cmy" value="'.$valjs_color_cmy.'" size="9" style="width:90px;" class="color {dmx_cmy:true}">';
 
 							echo'</td>';
 							echo'<td colspan="2">';
@@ -983,6 +997,8 @@ echo'<table><tr>';
 
 		//colonne du tableau global
 		echo'</td>';
+
+		echo'<input type="hidden" name="step_id" value="'.$datae[id].'">';
 
 		echo'</form>';
 
