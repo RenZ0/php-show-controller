@@ -49,16 +49,17 @@ echo'<div class="sideborder"><table><tr>
 			echo'<font size="2"><b>'.TXT_SCENARIO.'</b>:</font>
 			<a href="scenari.php?id='.$id.'">
 			<font size="2">('.$id.')</font>
-			<b>'.$data[scenari_name].'</b>
-			</a> - <a href="scenseq.php?id='.$id.'">'.TXT_STEPS.'</a>';
+			<b>'.$data[scenari_name].'</b></a>';
+
+			echo' - <a href="scenseq.php?id='.$id.'">'.TXT_STEPS.'</a>';
 			//
 			$reverse=$data[reverse]; //echo"$reverse";
 		}
 
 		if ($reverse=='0'){
-			echo'<a href="scenseq.php?id='.$id.'&way=1"><font size="2" color="#676767"> ( Normal ) </font></a>';
+			echo'&nbsp;<a href="scenseq.php?id='.$id.'&way=1"><font size="2" color="#676767">( Normal )</font></a>';
 		}else{
-			echo'<a href="scenseq.php?id='.$id.'&way=0"><font size="2" color="#676767"> ( Reverse ) </font></a>';
+			echo'&nbsp;<a href="scenseq.php?id='.$id.'&way=0"><font size="2" color="#676767">( Reverse )</font></a>';
 		}
 
 	echo'</td>';

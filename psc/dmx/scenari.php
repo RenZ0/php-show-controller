@@ -88,6 +88,14 @@ if ( isset($_POST['set_default']) )
 	}
 }
 
+//scename
+if ( isset($_POST['chgscename']) )
+{
+	//set name
+	$sqlb="UPDATE dmx_scensum SET scenari_name='".$_POST['scename']."' WHERE id=$id";
+	$sqlb=mysql_query($sqlb);
+}
+
 //reverse
 if ( isset($_GET['way']) )
 {
@@ -105,19 +113,37 @@ echo'<div class="sideborder"><table><tr>
 		$sql=mysql_query($sql);
 		while ($data=mysql_fetch_array($sql)){
 			//
-			echo'<b>'.TXT_SCENARIO.'</b>:
-			<a href="scenari.php?id='.$id.'">
-			<font size="2">('.$id.')</font>
-			<b>'.$data[scenari_name].'</b>
-			</a> - <a href="scenseq.php?id='.$id.'">'.TXT_MODIFY_STEPS.'</a>';
+			echo'<b>'.TXT_SCENARIO.'</b>:';
+			echo'&nbsp;';
+
+			if ( !isset($_GET['editname']) ){
+				echo'<a href="scenari.php?id='.$id.'"><font size="2">('.$id.')</font>&nbsp;<b>'.$data[scenari_name].'</b></a>';
+			}else{
+				echo'<a href="scenari.php?id='.$id.'"><font size="2">('.$id.')</font></a>';
+
+				echo'<form action="scenari.php?id='.$id.'" method="post">';
+				echo'<input name="scename" value="'.$data[scenari_name].'" size="30" style="width:300px;">';
+				echo'<input type="submit" name="chgscename" value="OK">';
+				echo'</form>';
+			}
+
+			echo'&nbsp;<a href="scenari.php?id='.$id.'&editname=1"';
+			echo' onmousemove="over(\''.TXT_EDIT.'\', event)" onmouseout="overstop()"';
+			echo'><font size="1">[E]</font></a>';
+
+			echo' - <a href="scenseq.php?id='.$id.'">'.TXT_MODIFY_STEPS.'</a>';
 			//
 			$reverse=$data[reverse]; //echo"$reverse";
 		}
 
 		if ($reverse=='0'){
-			echo'<a href="scenari.php?id='.$id.'&way=1"><font size="2" color="#676767"> ( Normal ) </font></a>';
+			echo' <a href="scenari.php?id='.$id.'&way=1"';
+			echo' onmousemove="over(\'Reverse ?\', event)" onmouseout="overstop()"';
+			echo'><font size="2" color="#676767">(&nbsp;Normal&nbsp;)</font></a>';
 		}else{
-			echo'<a href="scenari.php?id='.$id.'&way=0"><font size="2" color="#676767"> ( Reverse ) </font></a>';
+			echo' <a href="scenari.php?id='.$id.'&way=0"';
+			//echo' onmousemove="over(\'Normal ?\', event)" onmouseout="overstop()"';
+			echo'><font size="2" color="#676767">(&nbsp;Reverse&nbsp;)</font></a>';
 		}
 
 	echo'</td>';
