@@ -722,18 +722,18 @@ echo'<table><tr>';
 				echo'>E</a>';
 				echo'&nbsp;&nbsp;';
 
-				//dis link
-				echo'<a href="scenari.php?id='.$id.'&distep='.$datae[id].'"';
-				echo' onmousemove="over(\''.TXT_DISABLE.'\', event)" onmouseout="overstop()"';
-				echo" onclick=\"javascript:if(!confirm('DISABLE STEP ?')) return false;\"";
-				echo'>X</a>';
-				echo'&nbsp;';
-
 				//dup link
 				echo'<a href="scenari.php?id='.$id.'&dupstep='.$datae[id].'"';
 				echo' onmousemove="over(\''.TXT_DUPLICATE.'\', event)" onmouseout="overstop()"';
 				//echo" onclick=\"javascript:if(!confirm('DUPLICATE STEP ?')) return false;\"";
 				echo'>#</a>';
+				echo'&nbsp;&nbsp;';
+
+				//dis link
+				echo'<a href="scenari.php?id='.$id.'&distep='.$datae[id].'"';
+				echo' onmousemove="over(\''.TXT_DISABLE.'\', event)" onmouseout="overstop()"';
+				echo" onclick=\"javascript:if(!confirm('DISABLE STEP ?')) return false;\"";
+				echo'>X</a>';
 
 			echo'</div><br>';
 
