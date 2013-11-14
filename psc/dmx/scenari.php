@@ -726,7 +726,7 @@ echo'<table><tr>';
 				echo'<a href="scenari.php?id='.$id.'&dupstep='.$datae[id].'"';
 				echo' onmousemove="over(\''.TXT_DUPLICATE.'\', event)" onmouseout="overstop()"';
 				//echo" onclick=\"javascript:if(!confirm('DUPLICATE STEP ?')) return false;\"";
-				echo'>#</a>';
+				echo'>C</a>';
 				echo'&nbsp;&nbsp;';
 
 				//dis link
