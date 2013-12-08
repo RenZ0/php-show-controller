@@ -835,15 +835,25 @@ echo'<table><tr>';
 
 						//rgb color
 						if ($match=='rgb'){
-							echo'<a href="colors.php?newcolor='.$string.'" target="_blank">
-							<div class="carre" style="background-color:'.rgb2html($array[0],$array[1],$array[2]).';"></div></a>';
+							echo'<a href="colors.php?newcolor='.$string.'" target="_blank">';
+							if ($string=='255.255.255'){
+								echo'<div class="carre_border"';
+							}else{
+								echo'<div class="carre"';
+							}
+							echo' style="background-color:'.rgb2html($array[0],$array[1],$array[2]).';"></div></a>';
 							$nb_rgb++;
 						}
 
 						//cmy color
 						if ($match=='cmy'){
-							echo'<a href="colors.php?newcolor='.$string.'&iscmy=1" target="_blank">
-							<div class="carre" style="background-color:'.cmy2html($array[0],$array[1],$array[2]).';"></div></a>';
+							echo'<a href="colors.php?newcolor='.$string.'&iscmy=1" target="_blank">';
+							if ($string=='0.0.0'){
+								echo'<div class="carre_border"';
+							}else{
+								echo'<div class="carre"';
+							}
+							echo' style="background-color:'.cmy2html($array[0],$array[1],$array[2]).';"></div></a>';
 						}
 
 					echo'</td>';
