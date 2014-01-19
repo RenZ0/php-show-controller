@@ -60,6 +60,26 @@ if ( isset($_POST['set_filter']) )
 	}
 }
 
+//group
+if ( isset($_POST['unset_group']) )
+{
+	unset($_SESSION['group']);
+}
+
+if ( isset($_POST['set_group']) )
+{
+	$_SESSION['group'] = 1;
+	//echo"OK";
+}
+
+if ( isset($_POST['add_group']) )
+{
+	$sqla="INSERT INTO dmx_grpsum VALUES('','$_POST[id_schema]','$_POST[newgrp]','')";
+	$sqla=mysql_query($sqla) or die(mysql_error());
+	//$last_id=mysql_insert_id();
+	echo'group added: '.$_POST[newgrp].'';
+}
+
 //dhold dfade
 if ($_SESSION['dhold_value']==""){
 	$_SESSION['dhold_value'] = "1.0";
@@ -134,6 +154,13 @@ echo'<div class="sideborder"><table><tr>
 			echo' - <a href="scenseq.php?id='.$id.'">'.TXT_MODIFY_STEPS.'</a>';
 			//
 			$reverse=$data[reverse]; //echo"$reverse";
+
+			$sqle="SELECT * FROM dmx_fixture WHERE id=$data[id_fixture]";
+			$sqle=mysql_query($sqle);
+			while ($datae=mysql_fetch_array($sqle)){
+				//regarde le schema correspondant
+				$id_schema=$datae[id_schema];
+			}
 		}
 
 		if ($reverse=='0'){
@@ -155,12 +182,28 @@ echo'<div class="sideborder"><table><tr>
 		<div class="insideborder"><table><tr><td>
 
 			<form action="scenari.php?id=<?echo$id?>" method="post">
-				<b><?=TXT_FILTER?></b>:
-				<input type="text" name="filter_exp_a" size="6">
-				<input type="text" name="filter_exp_b" size="6">
-				<input type="submit" name="set_filter" value="<?=TXT_SET?>">
-				<input type="submit" name="unset_filter" value="<?=TXT_UNSET?>">
+
 				<?
+				if ( isset($_SESSION['group']) ){
+					?>
+					<b><?=TXT_GROUP?></b>:
+					<input type="text" name="newgrp" size="8">
+					<input type="submit" name="add_group" value="<?=TXT_ADD?>">
+					<input type="submit" name="unset_group" value="uG">
+					<input type="hidden" name="id_schema" value="<?=$id_schema?>">
+					<?
+				}else{
+					?>
+					<b><?=TXT_FILTER?></b>:
+					<input type="text" name="filter_exp_a" size="6">
+					<input type="text" name="filter_exp_b" size="6">
+					<input type="submit" name="set_filter" value="<?=TXT_SET?>">
+					<input type="submit" name="unset_filter" value="<?=TXT_UNSET?>">
+					<input type="submit" name="set_group" value="GEd">
+					<input type="submit" name="set_group" value="Grp">
+					<?
+				}
+
 				if ( isset($_SESSION['filter_exp_a']) OR isset($_SESSION['filter_exp_b']) )
 				{
 					echo'<font color="red"><b>OK</b></font> : ';
@@ -662,6 +705,109 @@ echo'<table><tr>';
 
 	echo'</form>';
 
+//// GROUPS
+
+	if ( isset($_SESSION['group']) ){
+
+		//display groups
+		$sqlgf="SELECT * FROM dmx_grpsum WHERE id_schema=$id_schema";
+
+		if ( isset($_SESSION['group_filter_a']) ){
+			$sqlgf.=" AND group_name LIKE '%$_SESSION[group_filter_a]%'";
+		}
+
+		if ( isset($_SESSION['group_filter_b']) ){
+			$sqlgf.=" AND group_name LIKE '%$_SESSION[group_filter_b]%'";
+		}
+
+		$sqlgf.=" ORDER BY group_name";
+
+		$sqlgf=mysql_query($sqlgf);
+		$testgf=mysql_num_rows($sqlgf);
+		while ($datagf=mysql_fetch_array($sqlgf)){
+
+			//premiere colonne avec les titres
+			echo'<form action="scenari.php?id='.$id.'#stepview" method="post">';
+
+			//colonne du tableau global
+			echo'<td>';
+			echo'<b>'.TXT_GROUP.'</b><br>';
+			echo'<font color="#808080">'.$datagf[group_name].'<div style="float:right;"></div></font>';
+			echo'<br><br>';
+			echo'<div class="colorview"><table>';
+
+			$sqlf="SELECT * FROM dmx_scenari WHERE id_scenari=$id AND step=0";
+			$sqlf.=" ORDER BY id";
+			$sqlf=mysql_query($sqlf);
+			while ($dataf=mysql_fetch_array($sqlf)){
+				echo'<tr>';
+
+					echo'<td>';
+						echo'<input name="group_name[]" value="'.$datagf[group_name].'" size="3">';
+					echo'</td>';
+
+					echo'<input name="ch_name[]" value="'.$dataf[ch_name].'" type="hidden">';
+
+				echo'</tr>';
+			}
+
+				echo'<tr><td colspan="2">';
+
+					//echo"<input name=\"\" value=\"\" size=\"8\"></td>";
+					echo'<input type="submit" name="chgnames" value="'.TXT_SAVE.'">';
+
+				echo'</td></tr>';
+
+				echo'<tr><td colspan="2">';
+					echo'&nbsp;';
+				echo'</td></tr>';
+
+			echo'</table></div>';
+
+			echo'<div class="ctrlzone"><table>';
+
+					//colonnes vides pour la hauteur
+
+				echo'<tr><td colspan="2">';
+					echo'<input name="" value="" size="8">';
+				echo'</td></tr>';
+
+				echo'<tr><td colspan="2">';
+					echo'<input name="" value="" size="8">'; //RGB
+				echo'</td></tr>';
+
+				echo'<tr><td colspan="2">';
+					echo'<input name="" value="" size="8">'; //CMY
+				echo'</td></tr>';
+
+				echo'<tr><td colspan="2">';
+					echo'<input name="" value="" size="8">';
+				echo'</td></tr>';
+
+				echo'<tr><td colspan="2">';
+					echo'<input name="" value="" size="8">';
+				echo'</td></tr>';
+
+				echo'<tr><td colspan="2">';
+					//fade
+					echo'<br>';
+					echo'<br><input name="" value="" size="8">';
+					echo'<br><input name="" value="" size="8">';
+					echo'<br><input name="" value="" size="8">';
+				echo'</td></tr>';
+
+			echo'</table></div>';
+
+			//colonne du tableau global
+			echo'</td>';
+			echo'</form>';
+
+			}//groups
+
+		}//session_group
+
+//// GROUPS
+
 	//from scensum
 	if ($reverse=='0'){
 		$way='ASC';
@@ -1044,7 +1190,7 @@ echo'<table><tr>';
 echo'</tr></table>';
 
 //echo'<div class="carre" style="background-color:'.rgb2html(255,0,255).';"></div><br>';
-//print_r($_POST);
+print_r($_POST);
 
 ?>
 
