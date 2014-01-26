@@ -80,6 +80,22 @@ if ( isset($_POST['add_group']) )
 	echo'group added: '.$_POST[newgrp].'';
 }
 
+if ( isset($_GET['group_id']) AND isset($_GET['ch_name']) )
+{
+	$sqlhf="SELECT * FROM dmx_groups WHERE id_group=$_GET[group_id] AND ch_name='$_GET[ch_name]'";
+	$sqlhf=mysql_query($sqlhf);
+	$testhf=mysql_num_rows($sqlhf);
+	if ($testhf==0){
+		$sqla="INSERT INTO dmx_groups VALUES('','$_GET[group_id]','$_GET[ch_name]')";
+		$sqla=mysql_query($sqla) or die(mysql_error());
+		//$last_id=mysql_insert_id();
+		//echo'channel added to group';
+	}else{
+		$sqla="DELETE FROM dmx_groups WHERE id_group=$_GET[group_id] AND ch_name='$_GET[ch_name]'";
+		$sqla=mysql_query($sqla) or die(mysql_error());
+	}
+}
+
 //dhold dfade
 if ($_SESSION['dhold_value']==""){
 	$_SESSION['dhold_value'] = "1.0";
@@ -190,6 +206,7 @@ echo'<div class="sideborder"><table><tr>
 					<input type="text" name="newgrp" size="8">
 					<input type="submit" name="add_group" value="<?=TXT_ADD?>">
 					<input type="submit" name="unset_group" value="uG">
+					<a href="grpmod.php?sch=<?=$id_schema?>" target="blank"><font size="2">Mod</font></a>
 					<input type="hidden" name="id_schema" value="<?=$id_schema?>">
 					<?
 				}else{
@@ -720,14 +737,14 @@ echo'<table><tr>';
 			$sqlgf.=" AND group_name LIKE '%$_SESSION[group_filter_b]%'";
 		}
 
-		$sqlgf.=" ORDER BY group_name";
+		$sqlgf.=" AND disabled=0 ORDER BY group_name";
 
 		$sqlgf=mysql_query($sqlgf);
 		$testgf=mysql_num_rows($sqlgf);
 		while ($datagf=mysql_fetch_array($sqlgf)){
 
 			//premiere colonne avec les titres
-			echo'<form action="scenari.php?id='.$id.'#stepview" method="post">';
+			//echo'<form action="scenari.php?id='.$id.'#stepview" method="post">';
 
 			//colonne du tableau global
 			echo'<td>';
@@ -743,10 +760,20 @@ echo'<table><tr>';
 				echo'<tr>';
 
 					echo'<td>';
-						echo'<input name="group_name[]" value="'.$datagf[group_name].'" size="3">';
-					echo'</td>';
+						//show a button for each line
+						echo'<a href="scenari.php?id='.$id.'&ch_name='.$dataf[ch_name].'&group_id='.$datagf[id].'#stepview">';
 
-					echo'<input name="ch_name[]" value="'.$dataf[ch_name].'" type="hidden">';
+						$sqlhf="SELECT * FROM dmx_groups WHERE id_group=$datagf[id] AND ch_name='$dataf[ch_name]'";
+						$sqlhf=mysql_query($sqlhf);
+						$testhf=mysql_num_rows($sqlhf);
+						if ($testhf==0){
+							echo'<div class="off_group">'.$datagf[group_name].'</div>';
+						}else{
+							echo'<div class="in_group">'.$datagf[group_name].'</div>';
+						}
+
+						echo'</a>';
+					echo'</td>';
 
 				echo'</tr>';
 			}
@@ -754,7 +781,7 @@ echo'<table><tr>';
 				echo'<tr><td colspan="2">';
 
 					//echo"<input name=\"\" value=\"\" size=\"8\"></td>";
-					echo'<input type="submit" name="chgnames" value="'.TXT_SAVE.'">';
+					echo'<input type="submit" name="" value="_______">';
 
 				echo'</td></tr>';
 
@@ -800,11 +827,11 @@ echo'<table><tr>';
 
 			//colonne du tableau global
 			echo'</td>';
-			echo'</form>';
+			//echo'</form>';
 
-			}//groups
+		}//groups
 
-		}//session_group
+	}//session_group
 
 //// GROUPS
 

@@ -189,3 +189,23 @@ border-style:solid;
 border-width:0px;
 }
 
+.off_group {
+background-color:#88a4cf;
+border-color:#d9d9d9;
+border-style:solid;
+border-width:1px;
+width:72px;
+height:22px;
+margin-bottom:1px;
+}
+
+.in_group {
+background-color:#cf9688;
+border-color:#d9d9d9;
+border-style:solid;
+border-width:1px;
+width:72px;
+height:22px;
+margin-bottom:1px;
+}
+
