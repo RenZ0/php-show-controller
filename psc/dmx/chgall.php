@@ -82,7 +82,11 @@
 			//sinon toutes les rgb when no filter
 			}elseif ( (isset($_POST['chgallval'])) AND (!isset($_POST['colorstab'])) AND $new_allch_value!="" 
 
-								AND (!isset($_SESSION['filter_exp_a'])) AND (!isset($_SESSION['filter_exp_b'])) ){
+						AND (!isset($_SESSION['filter_exp_a'])) AND (!isset($_SESSION['filter_exp_b'])) 
+
+						AND (!isset($_SESSION['group_filter_a'])) AND (!isset($_SESSION['group_filter_b'])) 
+
+					){
 
 				//array values
 				for ($j = 0; $j < $testf; $j++) {

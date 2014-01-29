@@ -54,7 +54,7 @@ echo'<div id="sequence"><table>';
 	echo'<form action="grpmod.php?sch='.$_GET[sch].'" method="post">';
 
 	echo'<tr>';
-		echo'<td><b>'.TXT_GROUPS.'</b></td>';
+		echo'<td><b>'.TXT_GROUP.'</b></td>';
 		echo'<td><b>'.TXT_ENABLED.'</b></td>';
 	echo'</tr>';
 
@@ -95,7 +95,7 @@ echo'<div id="sequence"><table>';
 	$sqlf=mysql_query($sqlf);
 	while ($dataf=mysql_fetch_array($sqlf)){
 		echo'<tr>';
-			echo'<td><input name="group_name[]" value="'.$dataf[group_name].'" size="10"></td>';
+			echo'<td><input name="group_name[]" value="'.$dataf[group_name].'" size="8"></td>';
 			echo'<input name="id[]" value="'.$dataf[id].'" type="hidden">';
 			//echo'<td><input name="disabled[]" value="'.$dataf[disabled].'" size="3"></td>';
 			echo'<td><center><input type="checkbox" name="enabled[]" value="'.$dataf[id].'"'; if ($dataf[disabled]=='0'){echo' checked';} echo'></center></td>';

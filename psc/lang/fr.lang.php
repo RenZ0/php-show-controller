@@ -172,6 +172,12 @@ define('TXT_COLOR_MOVE_REWIND','Déplace la dernière couleur rgb sur tous les c
 define('TXT_COLOR_RECOVER','Recouvre les canaux rgb avec la couleur rgb1');
 define('TXT_COLOR_RECOVER_REWIND','Recouvre les canaux rgb avec la dernière couleur rgb');
 
+define('TXT_GROUP','Groupe');
+define('TXT_GROUP_FILTER','Filtre.Grp');
+define('TXT_SET_GROUP_EDIT','G.Edit');
+define('TXT_SET_GROUP_USE','Groupes');
+define('TXT_UNSET_GROUP','Regex');
+
 //---------------------------------------------------------
 // play.php
 //---------------------------------------------------------
