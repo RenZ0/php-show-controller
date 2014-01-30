@@ -751,7 +751,7 @@ echo'<table><tr>';
 
 				//colonnes vides pour la hauteur
 
-			echo'<tr><td colspan="2">';
+			echo'<tr><td>';
 				echo'<input name="" value="" size="8">';
 			echo'</td></tr>';
 
@@ -760,7 +760,7 @@ echo'<table><tr>';
 			while ($datap=mysql_fetch_array($sqlp)){
 				if ($datap[display_rgb]==1){
 
-					echo'<tr><td colspan="2">';
+					echo'<tr><td>';
 						echo'<input name="" value="RGB" size="8">';
 					echo'</td></tr>';
 
@@ -768,22 +768,22 @@ echo'<table><tr>';
 
 				if ($datap[display_cmy]==1){
 
-					echo'<tr><td colspan="2">';
+					echo'<tr><td>';
 						echo'<input name="" value="CMY" size="8">';
 					echo'</td></tr>';
 
 				}
 			}
 
-			echo'<tr><td colspan="2">';
+			echo'<tr><td>';
 				echo'<input name="" value="" size="8">';
 			echo'</td></tr>';
 
-			echo'<tr><td colspan="2">';
+			echo'<tr><td>';
 				echo'<input name="" value="" size="8">';
 			echo'</td></tr>';
 
-			echo'<tr><td colspan="2">';
+			echo'<tr><td>';
 				//fade
 				echo'<br>';
 				echo'<br><input name="" value="" size="8">';
@@ -876,13 +876,13 @@ echo'<table><tr>';
 				echo'</tr>';
 			}
 
-				echo'<tr><td colspan="2">';
+				echo'<tr><td>';
 
 					echo'<input type="submit" name="" value="" style="width:55px;">';
 
 				echo'</td></tr>';
 
-				echo'<tr><td colspan="2">';
+				echo'<tr><td>';
 					echo'&nbsp;';
 				echo'</td></tr>';
 
@@ -892,7 +892,7 @@ echo'<table><tr>';
 
 					//colonnes vides pour la hauteur
 
-				echo'<tr><td colspan="2">';
+				echo'<tr><td>';
 					echo'<input name="" value="" size="3" style="width:55px;">';
 				echo'</td></tr>';
 
@@ -901,7 +901,7 @@ echo'<table><tr>';
 				while ($datap=mysql_fetch_array($sqlp)){
 					if ($datap[display_rgb]==1){
 
-						echo'<tr><td colspan="2">';
+						echo'<tr><td>';
 							echo'<input name="" value="" size="3" style="width:55px;">';
 						echo'</td></tr>';
 
@@ -909,22 +909,22 @@ echo'<table><tr>';
 
 					if ($datap[display_cmy]==1){
 
-						echo'<tr><td colspan="2">';
+						echo'<tr><td>';
 							echo'<input name="" value="" size="3" style="width:55px;">';
 						echo'</td></tr>';
 
 					}
 				}
 
-				echo'<tr><td colspan="2">';
+				echo'<tr><td>';
 					echo'<input name="" value="" size="3" style="width:55px;">';
 				echo'</td></tr>';
 
-				echo'<tr><td colspan="2">';
+				echo'<tr><td>';
 					echo'<input name="" value="" size="3" style="width:55px;">';
 				echo'</td></tr>';
 
-				echo'<tr><td colspan="2">';
+				echo'<tr><td>';
 					//fade
 					echo'<br>';
 					echo'<br><input name="" value="" size="3" style="width:55px;">';
@@ -1197,7 +1197,7 @@ echo'<table><tr>';
 						echo'<input name="allch_value" value="" size="9" style="width:90px;">';
 
 					echo'</td>';
-					echo'<td colspan="2">';
+					echo'<td>';
 
 						echo'<input type="submit" name="chgallval" value="ALL">';
 
@@ -1225,7 +1225,7 @@ echo'<table><tr>';
 								echo'<input name="allch_valuejs_rgb" value="'.$valjs_color_rgb.'" size="9" style="width:90px;" class="color {dmx_rgb:true}">';
 
 							echo'</td>';
-							echo'<td colspan="2">';
+							echo'<td>';
 
 								echo'<input type="submit" name="chgallvaljs_rgb" value="RGB">';
 
@@ -1251,7 +1251,7 @@ echo'<table><tr>';
 								echo'<input name="allch_valuejs_cmy" value="'.$valjs_color_cmy.'" size="9" style="width:90px;" class="color {dmx_cmy:true}">';
 
 							echo'</td>';
-							echo'<td colspan="2">';
+							echo'<td>';
 
 								echo'<input type="submit" name="chgallvaljs_cmy" value="CMY">';
 
@@ -1261,8 +1261,8 @@ echo'<table><tr>';
 					}
 				}
 
-				//col3
-				echo'<tr><td colspan="3">';
+				//col2
+				echo'<tr><td colspan="2">';
 
 					//random
 					echo'<input type="submit" name="chgallrand" value="* RGB RANDOM *">';
@@ -1284,7 +1284,7 @@ echo'<table><tr>';
 						echo'</select>';
 
 					echo'</td>';
-					echo'<td colspan="2">';
+					echo'<td>';
 
 						echo'<input type="submit" name="chgallvalmy" value="A">';
 
@@ -1317,7 +1317,7 @@ echo'<table><tr>';
 						echo'<br>offset<input name="offset" value="" size="1">';
 
 					echo'</td>';
-					echo'<td colspan="2">';
+					echo'<td>';
 
 						echo'<input type="submit" name="chgallvalfade" value="Gdt">';
 
