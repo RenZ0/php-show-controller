@@ -96,6 +96,22 @@ if ( isset($_POST['set_group_use']) )
 	//echo"OK";
 }
 
+//group session ident
+if ( isset($_POST['unset_ident']) )
+{
+	unset($_SESSION['ident_value']);
+}
+
+if ( isset($_POST['set_ident']) )
+{
+	if ( $_POST['ident_value_tab']!="" ){
+		$_SESSION['ident_value'] = $_POST['ident_value_tab'];
+		//
+	}elseif ( $_POST['ident_value_man']!="" ){
+		$_SESSION['ident_value'] = $_POST['ident_value_man'];
+	}
+}
+
 //new group
 if ( isset($_POST['add_group']) )
 {
@@ -116,6 +132,13 @@ if ( isset($_GET['group_id']) AND isset($_GET['ch_name']) )
 		$sqla=mysql_query($sqla) or die(mysql_error());
 		//$last_id=mysql_insert_id();
 		//echo'channel added to group';
+
+		if ( isset($_SESSION['ident_value']) )
+		{
+			$sqlb="UPDATE dmx_scenari SET ch_value='$_SESSION[ident_value]' WHERE step!=0 AND ch_name = '$_GET[ch_name]'";
+			$sqlb.=" AND id_scenari=$id";
+			$sqlb=mysql_query($sqlb) or die(mysql_error());
+		}
 	}else{
 		$sqla="DELETE FROM dmx_groups WHERE id_group=$_GET[group_id] AND ch_name='$_GET[ch_name]'";
 		$sqla=mysql_query($sqla) or die(mysql_error());
@@ -302,11 +325,39 @@ echo'<div class="sideborder"><table><tr>
 
 			<div align="right">
 
-				<form action="scenari.php?id=<?echo$id?>" method="post">
-					<?=TXT_HOLD_H?> <input type="text" name="dhold_value" size="2" style="width:35px;">
-					<?=TXT_FADE_F?> <input type="text" name="dfade_value" size="2" style="width:35px;">
-					<input type="submit" name="set_default" value="<?=TXT_DEFAULT?>">
-				</form>
+				<?
+				if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){ //Group Edit Ident
+					?>
+					<form action="scenari.php?id=<?echo$id?>" method="post">
+						<input type="text" name="ident_value_man" size="8" value="<?=$_SESSION['ident_value']?>">
+
+						<?
+						echo'<select name="ident_value_tab">';
+
+							echo'<option value="">';
+							$sqlh="SELECT * FROM dmx_colors WHERE disabled!=1 ORDER BY position,id";
+							$sqlh=mysql_query($sqlh);
+							while ($datah=mysql_fetch_array($sqlh)){
+								echo"<option value=\"$datah[ch_value]\">$datah[colorname]";
+							}
+
+						echo'</select>';
+						?>
+
+						<input type="submit" name="set_ident" value="OK">
+						<input type="submit" name="unset_ident" value="X">
+					</form>
+					<?
+				}else{
+					?>
+					<form action="scenari.php?id=<?echo$id?>" method="post">
+						<?=TXT_HOLD_H?> <input type="text" name="dhold_value" size="2" style="width:35px;">
+						<?=TXT_FADE_F?> <input type="text" name="dfade_value" size="2" style="width:35px;">
+						<input type="submit" name="set_default" value="<?=TXT_DEFAULT?>">
+					</form>
+					<?
+				}
+				?>
 
 			</div>
 
