@@ -112,8 +112,22 @@ if ( isset($_POST['set_ident']) )
 	}
 }
 
+//dis group
+if ( isset($_GET['disgrp']) )
+{
+	$sqlb="UPDATE dmx_grpsum SET disabled='1' WHERE id='".$_GET['disgrp']."'";
+	$sqlb=mysql_query($sqlb);
+}
+
+//edit group
+if ( isset($_POST['chgroup']) )
+{
+	$sqlb="UPDATE dmx_grpsum SET group_name='".$_POST['group_name']."' WHERE id='".$_POST['group_id']."'";
+	$sqlb=mysql_query($sqlb);
+}
+
 //new group
-if ( isset($_POST['add_group']) )
+if ( isset($_POST['add_group']) AND $_POST['newgrp']!="" )
 {
 	$sqla="INSERT INTO dmx_grpsum VALUES('','$_POST[id_schema]','$_POST[newgrp]','')";
 	$sqla=mysql_query($sqla) or die(mysql_error());
@@ -239,12 +253,19 @@ echo'<div class="sideborder"><table><tr>
 		}
 
 	echo'</td>';
+	echo'<td>';
+
+		echo'<div class="insideborder"><table><tr>';
+
+		if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){ //Group Edit
+			echo'<td style="background-color:#86879b">';
+		}elseif ( isset($_SESSION['group']) AND $_SESSION['group']==1 ){ //Group Use
+			echo'<td style="background-color:#cee1f0">';
+		}else{
+			echo'<td>';
+		}
 
 ?>
-
-	<td>
-
-		<div class="insideborder"><table><tr><td>
 
 			<form action="scenari.php?id=<?echo$id?>" method="post">
 
@@ -261,7 +282,7 @@ echo'<div class="sideborder"><table><tr>
 					<?
 				}elseif ( isset($_SESSION['group']) AND $_SESSION['group']==1 ){ //Group Use
 					?>
-					<b><?=TXT_GROUP_FILTER?></b>:
+					<b><?=TXT_FILTER?></b>:
 
 					<?
 					echo'<select name="group_filter_a">';
@@ -270,8 +291,8 @@ echo'<div class="sideborder"><table><tr>
 						$sqlh="SELECT * FROM dmx_grpsum WHERE disabled!=1 AND id_schema=$id_schema ORDER BY group_name,id";
 						$sqlh=mysql_query($sqlh);
 						while ($datah=mysql_fetch_array($sqlh)){
-							echo'<option value="'.$datah[group_name].'" ';
-							if ( $_SESSION['group_filter_a']==$datah[group_name] ){ echo'selected'; }
+							echo'<option value="'.$datah[id].'" ';
+							if ( $_SESSION['group_filter_a']==$datah[id] ){ echo'selected'; }
 							echo'>'.$datah[group_name].'';
 						}
 
@@ -283,8 +304,8 @@ echo'<div class="sideborder"><table><tr>
 						$sqlh="SELECT * FROM dmx_grpsum WHERE disabled!=1 AND id_schema=$id_schema ORDER BY group_name,id";
 						$sqlh=mysql_query($sqlh);
 						while ($datah=mysql_fetch_array($sqlh)){
-							echo'<option value="'.$datah[group_name].'" ';
-							if ( $_SESSION['group_filter_b']==$datah[group_name] ){ echo'selected'; }
+							echo'<option value="'.$datah[id].'" ';
+							if ( $_SESSION['group_filter_b']==$datah[id] ){ echo'selected'; }
 							echo'>'.$datah[group_name].'';
 						}
 
@@ -321,7 +342,15 @@ echo'<div class="sideborder"><table><tr>
 				?>
 			</form>
 
-		</td><td width="300">
+		</td>
+
+		<?
+		if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){ //Group Edit
+			echo'<td width="300">';
+		}else{
+			echo'<td width="250">';
+		}
+		?>
 
 			<div align="right">
 
@@ -736,13 +765,13 @@ echo'<table><tr>';
 				if ( isset($_SESSION['group_filter_a']) ){
 					$sqlf.=" AND ch_name IN";
 					$sqlf.=" ( SELECT ch_name FROM dmx_groups INNER JOIN dmx_grpsum ON dmx_groups.id_group = dmx_grpsum.id";
-					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.group_name = '$_SESSION[group_filter_a]' )";
+					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.id = '$_SESSION[group_filter_a]' )";
 				}
 
 				if ( isset($_SESSION['group_filter_b']) ){
 					$sqlf.=" AND ch_name IN";
 					$sqlf.=" ( SELECT ch_name FROM dmx_groups INNER JOIN dmx_grpsum ON dmx_groups.id_group = dmx_grpsum.id";
-					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.group_name = '$_SESSION[group_filter_b]' )";
+					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.id = '$_SESSION[group_filter_b]' )";
 				}
 
 			}
@@ -856,7 +885,14 @@ echo'<table><tr>';
 	if ( isset($_SESSION['group']) AND !isset($_SESSION['light']) ){
 
 		//display groups
-		$sqlgf="SELECT * FROM dmx_grpsum WHERE id_schema=$id_schema AND disabled=0 ORDER BY group_name";
+		$sqlgf="SELECT * FROM dmx_grpsum WHERE id_schema=$id_schema AND disabled=0";
+
+		if ( isset($_GET['editgrp']) )
+		{
+			$sqlgf .= " AND id=$_GET[editgrp]";
+		}
+
+		$sqlgf .= " ORDER BY group_name";
 		$sqlgf=mysql_query($sqlgf);
 		$testgf=mysql_num_rows($sqlgf);
 		while ($datagf=mysql_fetch_array($sqlgf)){
@@ -866,9 +902,44 @@ echo'<table><tr>';
 
 			//colonne du tableau global
 			echo'<td>';
-			echo'<font color="#808080"><b>'.TXT_GROUP.'</b></font><br>';
-			echo'<font color="#808080"><div style="float:right;"></div></font>';
+
+			if ( isset($_GET['editgrp']) )
+			{
+				echo'<form action="scenari.php?id='.$id.'#stepview" method="post">';
+				echo'<input name="group_name" value="'.$datagf[group_name].'" size="8" style="width:85px;">';
+				echo'<input type="hidden" name="group_id" value="'.$datagf[id].'">';
+				echo'<input type="submit" name="chgroup" value="OK">';
+				echo'</form>';
+			}
+			else
+			{
+				echo'<a href="grpmod.php?sch='.$id_schema.'" target="blank">';
+				echo'<font color="#808080"><b>'.TXT_GROUP.'</b></font>';
+				echo'</a><br>';
+				echo'<div style="float:right;">';
+
+					//edit link
+					echo'<a href="scenari.php?id='.$id.'&editgrp='.$datagf[id].'"';
+					echo' onmousemove="over(\''.TXT_EDIT.'\', event)" onmouseout="overstop()"';
+					//echo" onclick=\"javascript:if(!confirm('EDIT GROUP ?')) return false;\"";
+					echo'><font color="#909090">E</font></a>';
+					echo'&nbsp;';
+
+					//dis link
+					echo'<a href="scenari.php?id='.$id.'&disgrp='.$datagf[id].'"';
+					echo' onmousemove="over(\''.TXT_DISABLE.'\', event)" onmouseout="overstop()"';
+					echo" onclick=\"javascript:if(!confirm('DISABLE GROUP ?')) return false;\"";
+					echo'><font color="#909090">X</font></a>';
+
+				echo'</div>';
+			}
+
 			echo'<br><br>';
+
+			if ( isset($_GET['editstep']) ){
+				echo'<br>';
+			}
+
 			echo'<div class="colorview"><table>';
 
 			$sqlf="SELECT * FROM dmx_scenari WHERE id_scenari=$id AND step=0";
@@ -878,13 +949,13 @@ echo'<table><tr>';
 				if ( isset($_SESSION['group_filter_a']) ){
 					$sqlf.=" AND ch_name IN";
 					$sqlf.=" ( SELECT ch_name FROM dmx_groups INNER JOIN dmx_grpsum ON dmx_groups.id_group = dmx_grpsum.id";
-					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.group_name = '$_SESSION[group_filter_a]' )";
+					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.id = '$_SESSION[group_filter_a]' )";
 				}
 
 				if ( isset($_SESSION['group_filter_b']) ){
 					$sqlf.=" AND ch_name IN";
 					$sqlf.=" ( SELECT ch_name FROM dmx_groups INNER JOIN dmx_grpsum ON dmx_groups.id_group = dmx_grpsum.id";
-					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.group_name = '$_SESSION[group_filter_b]' )";
+					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.id = '$_SESSION[group_filter_b]' )";
 				}
 
 			}
@@ -913,7 +984,11 @@ echo'<table><tr>';
 						$sqlhf=mysql_query($sqlhf);
 						$testhf=mysql_num_rows($sqlhf);
 						if ($testhf==0){
-							echo'<input name="" value="'.$datagf[group_name].'" size="3" class="off_group">';
+							if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){
+								echo'<input name="" value="'.$datagf[group_name].'" size="3" class="off_group">';
+							}else{
+								echo'<input name="" value="" size="3" class="off_group">';
+							}
 						}else{
 							echo'<input name="" value="'.$datagf[group_name].'" size="3" class="in_group">';
 						}
@@ -1135,13 +1210,13 @@ echo'<table><tr>';
 				if ( isset($_SESSION['group_filter_a']) ){
 					$sqlf.=" AND ch_name IN";
 					$sqlf.=" ( SELECT ch_name FROM dmx_groups INNER JOIN dmx_grpsum ON dmx_groups.id_group = dmx_grpsum.id";
-					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.group_name = '$_SESSION[group_filter_a]' )";
+					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.id = '$_SESSION[group_filter_a]' )";
 				}
 
 				if ( isset($_SESSION['group_filter_b']) ){
 					$sqlf.=" AND ch_name IN";
 					$sqlf.=" ( SELECT ch_name FROM dmx_groups INNER JOIN dmx_grpsum ON dmx_groups.id_group = dmx_grpsum.id";
-					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.group_name = '$_SESSION[group_filter_b]' )";
+					$sqlf.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.id = '$_SESSION[group_filter_b]' )";
 				}
 
 			}

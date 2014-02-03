@@ -173,7 +173,6 @@ define('TXT_COLOR_RECOVER','Recover rgb channels with rgb1 color');
 define('TXT_COLOR_RECOVER_REWIND','Recover rgb channels with last rgb color');
 
 define('TXT_GROUP','Group');
-define('TXT_GROUP_FILTER','Grp.Filter');
 define('TXT_SET_GROUP_EDIT','G.Edit');
 define('TXT_SET_GROUP_USE','Groups');
 define('TXT_UNSET_GROUP','Regex');
