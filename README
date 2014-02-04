@@ -45,6 +45,10 @@ sudo cp -r psc/ /var/www/
 
 PSC is ready !
 
+New in 1.1.7 : Groups
+Import psc_base_nodata.sql.gz into an existing database
+in order to only add the new tables.
+
 
 About php
 ---------
@@ -64,8 +68,8 @@ Getting Started
 You need to have OLA working :
 http://www.opendmx.net/index.php/OLA
 
-You can get deb packages on my website :
-http://imaginux.com/lighting/
+You can get deb packages here :
+http://www.opendmx.net/index.php/OLA_Debian_/_Ubuntu
 
 Start OLA, for example :
 olad -f (background)
@@ -116,7 +120,7 @@ Try the filter to show channels you want, and make fast changes
 (with filter, 'ALL' button applies value on every channel seen).
 
 On top of columns, click E to edit one step at a time.
-You can disable or duplicate a step with X or # symbols.
+You can duplicate a step with C (copy) or disable it with X.
 
 D,w and R,w letters are used to generate many steps from original step :
 D : first rgb color moves over rgb channels, going to last one.
@@ -127,6 +131,11 @@ w is the same but rewind, it uses the last color instead of first one.
 Use buttons (list, start...) to play the scenario
 and see the result while you create.
 Go to Steps page to change hold and fade times.
+
+New in 1.1.7 : Groups
+You have an edit mode for assigning channels to any group you create,
+set a value on the right helps to easily identify the channels,
+then use the standard mode to use filter with groups.
 
 4) Play the scenarios you've created from Control page.
 Control can be done with python too :
