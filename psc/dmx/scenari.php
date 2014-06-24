@@ -423,10 +423,32 @@ echo'<div class="sideborder"><table><tr>
 				}
 
 			echo'</select>';
+
+			echo' '.TXT_LIKE.'';
+
+			//replace line
+			if ( isset($_SESSION['group']) ){ //Group
+
+				echo'<select name="group_like">';
+
+					echo'<option value="">';
+					$sqlh="SELECT * FROM dmx_grpsum WHERE disabled!=1 AND id_schema=$id_schema ORDER BY group_name,id";
+					$sqlh=mysql_query($sqlh);
+					while ($datah=mysql_fetch_array($sqlh)){
+						echo'<option value="'.$datah[id].'" ';
+						//if ( $_SESSION['group_like']==$datah[id] ){ echo'selected'; }
+						echo'>'.$datah[group_name].'';
+					}
+
+				echo'</select>';
+				echo'<input type="text" name="likevalue" size="3" value="">';
+
+			}else{
+				echo'<input type="text" name="likevalue" size="10" value="">';
+			}
 			?>
 
-			<?=TXT_LIKE?> <input type="text" name="likevalue" size="10" value="">
-			<?=TXT_OLD?> <input type="text" name="oldvalue" size="8" value="">
+			<?=TXT_OLD?><input type="text" name="oldvalue" size="8" value="">
 			<?=TXT_TOALL?><input type="checkbox" name="applytoall" value="1">
 			<input type="submit" name="superchg" value="<?=TXT_SAVE?>">
 		</form>
@@ -448,7 +470,18 @@ if ( isset($_POST['superchg']) )
 		$newvalue=$_POST['newvaluetab'];
 	}
 
-	if ($_POST['likevalue']!=""){
+	if ($_POST['group_like']!=""){
+		$sqlb="UPDATE dmx_scenari SET ch_value='$newvalue' WHERE step!=0";
+		$sqlb.=" AND ch_name IN";
+		$sqlb.=" ( SELECT ch_name FROM dmx_groups INNER JOIN dmx_grpsum ON dmx_groups.id_group = dmx_grpsum.id";
+		$sqlb.=" WHERE dmx_grpsum.disabled=0 AND dmx_grpsum.id = '$_POST[group_like]' )";
+		if ($_POST['applytoall']!='1'){
+			//this scen only
+			$sqlb.=" AND id_scenari=$id";
+		}
+		$sqlb=mysql_query($sqlb) or die(mysql_error());
+	//
+	}elseif ($_POST['likevalue']!=""){
 		$sqlb="UPDATE dmx_scenari SET ch_value='$newvalue' WHERE step!=0 AND ch_name LIKE '%".$_POST['likevalue']."%'";
 		if ($_POST['applytoall']!='1'){
 			//this scen only
