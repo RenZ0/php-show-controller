@@ -257,32 +257,65 @@ echo'<div class="sideborder"><table><tr>
 
 		echo'<div class="insideborder"><table><tr>';
 
-		if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){ //Group Edit
-			echo'<td style="background-color:#86879b">';
-		}elseif ( isset($_SESSION['group']) AND $_SESSION['group']==1 ){ //Group Use
-			echo'<td style="background-color:#cee1f0">';
-		}else{
-			echo'<td>';
-		}
-
 ?>
 
 			<form action="scenari.php?id=<?echo$id?>" method="post">
 
 				<?
+			echo'<td width="500">';
+				//Classic filter
+				?>
+				<b><?=TXT_FILTER?></b>:
+				<input type="text" name="filter_exp_a" size="6">
+				<input type="text" name="filter_exp_b" size="6">
+				<input type="submit" name="set_filter" value="<?=TXT_SET?>">
+				<input type="submit" name="unset_filter" value="<?=TXT_UNSET?>">
+				<?
+
+				if ( isset($_SESSION['filter_exp_a']) OR isset($_SESSION['filter_exp_b']) )
+				{
+					echo'<font color="red"><b>OK</b></font> : ';
+
+					if ( isset($_SESSION['filter_exp_a']) ){
+						echo''.$_SESSION['filter_exp_a'].'';
+					}
+
+					if ( isset($_SESSION['filter_exp_b']) ){
+						echo' # '.$_SESSION['filter_exp_b'].'';
+					}
+				}
+			echo'</td>';
+			echo'<td>'; //boutons group
+				?>
+				<div align="right">
+					<input type="submit" name="set_group_use" value="<?=TXT_SET_GROUP_USE?>">
+					<input type="submit" name="set_group_edit" value="<?=TXT_SET_GROUP_EDIT?>">
+					<input type="submit" name="unset_group" value="<?=TXT_UNSET_GROUP?>">
+				</div>
+				<?
+			echo'</td>';
+		echo'</tr>';
+		echo'<tr>'; //2eme ligne (group)
+
+			if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){ //Group Edit
+				echo'<td style="background-color:#86879b">';
+			}elseif ( isset($_SESSION['group']) AND $_SESSION['group']==1 ){ //Group Use
+				echo'<td style="background-color:#cee1f0">';
+			}else{
+				echo'<td>';
+			}
+
 				if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){ //Group Edit
 					?>
 					<b><?=TXT_GROUP?></b>:
 					<input type="text" name="newgrp" size="8">
 					<input type="submit" name="add_group" value="<?=TXT_ADD?>">
-					<input type="submit" name="set_group_use" value="<?=TXT_SET_GROUP_USE?>">
-					<input type="submit" name="unset_group" value="<?=TXT_UNSET_GROUP?>">
 					<a href="grpmod.php?sch=<?=$id_schema?>" target="blank"><font size="2">(Mod)</font></a>
 					<input type="hidden" name="id_schema" value="<?=$id_schema?>">
 					<?
 				}elseif ( isset($_SESSION['group']) AND $_SESSION['group']==1 ){ //Group Use
 					?>
-					<b><?=TXT_FILTER?></b>:
+					<b><?=TXT_GROUP?></b>:
 
 					<?
 					echo'<select name="group_filter_a">';
@@ -314,39 +347,15 @@ echo'<div class="sideborder"><table><tr>
 
 					<input type="submit" name="set_group_filter" value="<?=TXT_SET?>">
 					<input type="submit" name="unset_group_filter" value="<?=TXT_UNSET?>">
-					<input type="submit" name="set_group_edit" value="<?=TXT_SET_GROUP_EDIT?>">
-					<?
-				}else{ //Classic filter
-					?>
-					<b><?=TXT_FILTER?></b>:
-					<input type="text" name="filter_exp_a" size="6">
-					<input type="text" name="filter_exp_b" size="6">
-					<input type="submit" name="set_filter" value="<?=TXT_SET?>">
-					<input type="submit" name="unset_filter" value="<?=TXT_UNSET?>">
-					<input type="submit" name="set_group_use" value="<?=TXT_SET_GROUP_USE?>">
 					<?
 				}
-
-				if ( isset($_SESSION['filter_exp_a']) OR isset($_SESSION['filter_exp_b']) )
-				{
-					echo'<font color="red"><b>OK</b></font> : ';
-
-					if ( isset($_SESSION['filter_exp_a']) ){
-						echo''.$_SESSION['filter_exp_a'].'';
-					}
-
-					if ( isset($_SESSION['filter_exp_b']) ){
-						echo' # '.$_SESSION['filter_exp_b'].'';
-					}
-				}
+				echo'</td>';
 				?>
 			</form>
 
-		</td>
-
 		<?
 		if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){ //Group Edit
-			echo'<td width="300">';
+			echo'<td width="316">';
 		}else{
 			echo'<td width="250">';
 		}
@@ -390,7 +399,8 @@ echo'<div class="sideborder"><table><tr>
 
 			</div>
 
-		</td></tr></table></div>
+			</td>
+		</tr></table></div>
 
 	</td>
 
