@@ -1018,26 +1018,33 @@ echo'<table><tr>';
 
 					echo'<td>';
 
-						if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){ //Group Edit Link
-							echo'<a href="scenari.php?id='.$id.'&ch_name='.$dataf[ch_name].'&group_id='.$datagf[id].'#stepview">';
-						}
-
 						//show a button for each line
 						$sqlhf="SELECT * FROM dmx_groups WHERE id_group=$datagf[id] AND ch_name='$dataf[ch_name]'";
 						$sqlhf=mysql_query($sqlhf);
 						$testhf=mysql_num_rows($sqlhf);
-						if ($testhf==0){
-							if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){
-								echo'<input name="" value="'.$datagf[group_name].'" size="3" class="off_group">';
+
+						if ($testhf==0){ //off_group
+
+							if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){ //Group Edit Link
+
+								echo'<a href="scenari.php?id='.$id.'&ch_name='.$dataf[ch_name].'&group_id='.$datagf[id].'&in_g=1#stepview">';
+									echo'<input name="" value="'.$datagf[group_name].'" size="3" class="off_group">';
+								echo'</a>';
+
 							}else{
 								echo'<input name="" value="" size="3" class="off_group">';
 							}
-						}else{
-							echo'<input name="" value="'.$datagf[group_name].'" size="3" class="in_group">';
-						}
+						}else{ //in_group
 
-						if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){ //Group Edit Link
-							echo'</a>';
+							if ( isset($_SESSION['group']) AND $_SESSION['group']==0 ){ //Group Edit Link
+
+								echo'<a href="scenari.php?id='.$id.'&ch_name='.$dataf[ch_name].'&group_id='.$datagf[id].'&in_g=0#stepview">';
+									echo'<input name="" value="'.$datagf[group_name].'" size="3" class="in_group">';
+								echo'</a>';
+
+							}else{
+								echo'<input name="" value="'.$datagf[group_name].'" size="3" class="in_group">';
+							}
 						}
 
 					echo'</td>';
