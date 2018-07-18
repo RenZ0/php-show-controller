@@ -28,6 +28,42 @@ $id = $_GET['id'];
 
 include("controlseq.php");
 
+////
+$dupscen=($_POST['dupscen']);
+
+//dupscen
+if ( isset($_POST['dupscen']) )
+{
+	//regarde le scenseq
+	$sqlb="SELECT * FROM dmx_scenseq WHERE id_scenari=$dupscen ORDER BY id";
+	$sqlb=mysql_query($sqlb);
+	$p=0;
+	while ($datab=mysql_fetch_array($sqlb)){
+		//DO NOT add step 0 (names)
+		$p++;
+
+		//ajoute le meme, entry in seq
+		$sqlc="INSERT INTO dmx_scenseq VALUES('','$id','$datab[stepname]','$datab[hold]','$datab[fade]','$datab[position]','$datab[disabled]')";
+		$sqlc=mysql_query($sqlc) or die(mysql_error());
+		//echo"<b>Scenseq$p</b>-";
+
+		$last_step=mysql_insert_id();
+
+		//regarde le step content for this entry (id_scenari optional)
+		$sqle="SELECT * FROM dmx_scenari WHERE id_scenari=$dupscen AND step=$datab[id] ORDER BY id";
+		$sqle=mysql_query($sqle);
+		while ($datae=mysql_fetch_array($sqle)){
+			//ajoute le meme
+			$sqlf="INSERT INTO dmx_scenari VALUES('','$id','$datae[ch_name]','$datae[ch_value]','$last_step')";
+			$sqlf=mysql_query($sqlf) or die(mysql_error());
+			//echo"Step$p-";
+		}
+	}
+
+echo'<i>'.TXT_SCENARIO_DUP.'</i><br>';
+}
+////
+
 //reverse
 if ( isset($_GET['way']) )
 {
@@ -62,6 +98,30 @@ echo'<div class="sideborder"><table><tr>
 			echo'&nbsp;<a href="scenseq.php?id='.$id.'&way=0"><font size="2" color="#676767">( Reverse )</font></a>';
 		}
 
+	echo'</td>';
+	echo'<td>';
+		echo'<form action="scenseq.php?id='.$id.'" method="post">';
+		echo'<select name="dupscen">';
+
+	//regarde le scensum
+	$sqlb="SELECT * FROM dmx_scensum WHERE id=$id ORDER BY id";
+	$sqlb=mysql_query($sqlb);
+	while ($datab=mysql_fetch_array($sqlb)){
+
+		//list all scenarios for this fixture
+		$sqlc="SELECT * FROM dmx_scensum WHERE disabled!=1 AND id_fixture=$datab[id_fixture] ORDER BY id";
+		$sqlc=mysql_query($sqlc);
+		while ($datac=mysql_fetch_array($sqlc)){
+
+			echo"<option value=\"$datac[id]\">";
+
+			echo"$datac[scenari_name]"; //U$datac[univ] - $datad[schema_name] (Patch $datac[patch] - $datac[patch_after])
+		}
+	}
+
+		echo'</select>';
+		echo' <input type="submit" name="dup" value="DUP">';
+		echo'</form>';
 	echo'</td>';
 
 echo'</tr></table></div>';
