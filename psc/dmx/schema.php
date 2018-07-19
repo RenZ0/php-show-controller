@@ -62,12 +62,16 @@ while ($data=mysql_fetch_array($sql)){
 
 <?
 
+$sqli="SELECT * FROM dmx_schsum WHERE disabled!=1 AND id!=$id ORDER BY id";
+$sqli=mysql_query($sqli);
+$testi=mysql_num_rows($sqli);
+if($testi!=0){
 //from existing schema
 echo'<td><form action="schema.php?id='.$id.'" method="post">';
 
-	echo'<b>'.TXT_MULTI.'</b> <select name="schema_src">';
-	$sqli="SELECT * FROM dmx_schsum";
-	$sqli=mysql_query($sqli);
+	echo'<b>'.TXT_MULTI.'</b>';
+	echo'&nbsp;';
+	echo'<select name="schema_src">';
 	while ($datai=mysql_fetch_array($sqli)){
 		//
 		echo'<option value="'.$datai[id].'">'.$datai[schema_name].'';
@@ -81,6 +85,7 @@ echo'<td><form action="schema.php?id='.$id.'" method="post">';
 	echo' <input type="submit" name="addchfromschema" value="'.TXT_ADD.'">';
 
 echo'</form></td>';
+}
 
 echo'</tr></table></div>';
 
