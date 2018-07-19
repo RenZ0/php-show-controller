@@ -183,6 +183,12 @@ echo'<div id="sequence"><table>';
 				//get schema of current fixture
 				$sqlb="SELECT * FROM dmx_fixture WHERE id=$dataf[id_fixture]";
 				$sqlb=mysql_query($sqlb);
+				$testb=mysql_num_rows($sqlb);
+				if($testb==0){
+					echo'<option value="0">';
+					echo'---';
+				}
+
 				while ($datab=mysql_fetch_array($sqlb)){
 					//list all fixtures which have the same schema
 					$sqlc="SELECT * FROM dmx_fixture WHERE id_schema=$datab[id_schema] ORDER BY id";
