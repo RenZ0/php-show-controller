@@ -62,7 +62,7 @@ function verif1()
 <?
 
 //add scenari
-if ( isset($_POST['addscenari']) )
+if ( isset($_POST['addscenari']) AND isset($_POST['id_fixture']) )
 {
 	$sqla="INSERT INTO dmx_scensum VALUES('','$_POST[scenari_name]','$_POST[id_fixture]','','')";
 	$sqla=mysql_query($sqla) or die(mysql_error());

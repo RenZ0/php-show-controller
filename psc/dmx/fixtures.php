@@ -33,7 +33,7 @@ if ( isset($_GET['disfix']) )
 }
 
 //add fixture
-if ( isset($_POST['addfixture']) )
+if ( isset($_POST['addfixture']) AND isset($_POST['id_schema']) )
 {
 	$sqla="INSERT INTO dmx_fixture VALUES('','$_POST[fixture_name]','$_POST[id_schema]','$_POST[patch]','$_POST[patch_after]','$_POST[univ]','')";
 	$sqla=mysql_query($sqla) or die(mysql_error());
@@ -121,7 +121,7 @@ function verif1()
 <?
 
 //add fixture (info)
-if ( isset($_POST['addfixture']) )
+if ( isset($_POST['addfixture']) AND isset($_POST['id_schema']) )
 {
 	echo''.TXT_FIXTURE_ADDED.'<br>';
 }
